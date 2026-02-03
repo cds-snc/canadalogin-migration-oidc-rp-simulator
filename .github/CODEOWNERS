@@ -1,0 +1,2 @@
+.deployed_versions/test.json @cds-snc/gc-signin-migration-test-deploy-approvers
+.deployed_versions/staging.json @cds-snc/gc-signin-migration-staging-deploy-approvers
