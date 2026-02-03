@@ -1,0 +1,91 @@
+<header>
+	<div id="wb-bnr" class="container">
+		<div class="row">
+			<section id="wb-lng" class="col-xs-3 col-sm-12 pull-right text-right">
+				<h2 class="wb-inv">Language selection</h2>
+				<ul class="list-inline mrgn-bttm-0">
+					<li>
+						<a lang="<%= other_lang %>" hreflang="<%= other_lang %>" href="<%= language_link %>">
+							<span class="hidden-xs"><%= language_label %></span>
+							<abbr title="<%= language_label %>" class="visible-xs h3 mrgn-tp-sm mrgn-bttm-0 text-uppercase"><%= other_lang %></abbr>
+						</a>
+					</li>
+				</ul>
+			</section>
+
+			<div class="brand col-xs-9 col-sm-5 col-md-4">
+				<a href="https://www.canada.ca/en.html" property="url">
+					<img src="<%= ui_config.wet_cdts_hosturl %>/<%= ui_config.wet_cdts_version %>/wet-boew/assets/sig-blk-<%= lang %>.svg" alt="Government of Canada / Gouvernement du Canada">
+					<span class="wb-inv"> Government of Canada / <span lang="fr">Gouvernement du Canada</span></span>
+				</a>
+			</div>
+
+			<section id="wb-srch" class="col-lg-offset-4 col-md-offset-4 col-sm-offset-2 col-xs-12 col-sm-5 col-md-4">
+				<h2><%= search_label %></h2>
+				<form action="#" method="post" name="cse-search-box" role="search">
+					<div class="form-group wb-srch-qry">
+						<label for="wb-srch-q" class="wb-inv"><%= search_title %> Canada.ca</label>
+						<input id="wb-srch-q" list="wb-srch-q-ac" class="wb-srch-q form-control" name="q" type="search" value="" size="34" maxlength="170" placeholder="<%= search_title %> Canada.ca">
+					</div>
+					<div class="form-group submit">
+						<button type="submit" id="wb-srch-sub" class="btn btn-primary btn-small" name="wb-srch-sub"><span class="glyphicon-search glyphicon"></span><span class="wb-inv"><%= search_label %></span></button>
+					</div>
+				</form>
+			</section>
+
+			<section class="wb-mb-links col-xs-4 col-sm-3 visible-sm visible-xs" id="wb-glb-mn">
+				<h2>Menus</h2>
+				<ul class="list-inline text-right chvrn">
+				  <li><a href="#mb-pnl" title="Menus" aria-controls="mb-pnl" class="overlay-lnk" role="button"><span class="glyphicon glyphicon-th-list"><span class="wb-inv">Menus</span></span></a></li>
+				</ul>
+				<div id="mb-pnl"></div>
+			</section>
+		</div>
+	</div>
+
+	<nav class="gcweb-menu" typeof="SiteNavigationElement">
+	  <div class="container nvbar">
+		<h2 class="wb-inv">Menu</h2>
+		<button type="button" aria-haspopup="true" aria-expanded="false"><span class="wb-inv">Main </span>Menu <span class="expicon glyphicon glyphicon-chevron-down"></span></button>
+		<ul role="menu" aria-orientation="vertical">
+		  <li role="presentation"><a role="menuitem" href="<%= home_link %>" ><%= home_label %></a></li>
+		  <% if (!isLoggedIn) { %>
+		  <li role="presentation"><a role="menuitem" href="<%= loginMigration_link %>" >Sign In</a></li>
+		  <%}%>
+		  <li role="presentation"><a role="menuitem" href="<%= response_link %>" ><%= response_label %></a></li>
+		  <li role="presentation"><a role="menuitem" href="" ><%= help_label %></a></li>
+		  <li role="presentation"><a role="menuitem" href="<%= gc_link %>">canada.ca</a></li>
+		</ul>
+	  </div>
+	</nav>
+	<nav id="wb-bc" property="breadcrumb">
+	  <h2>You are here:</h2>
+	  <div class="container">
+		<ol class="breadcrumb">
+			<li><a href="<%= home_link %>" title="<%= home_title %>"><%= home_label %></a></li>
+			<% if (page === 'login') { %>
+			<li><a href="#" title="<%= title_l %>"><%= title_l %></a></li>
+			<% } else if (page === 'response') { %>	
+			<li><a href="#" title="<%= title_r %>"><%= title_r %></a></li>
+			<% } %>
+		</ol>
+	  </div>
+	</nav>
+	<section id="wb-so">
+		<h2 class="wb-inv">Sign-on information</h2>
+		<div class="container">
+			<div class="row">
+				<div class="col-md-12">
+					<% if (isLoggedIn) { %>
+						<form action="/signout">
+							<button id="signout" class="btn btn-primary" style="padding: 10px 14px;" type="submit">	
+								<span class="fas fa-power-off" aria-hidden="true"/>
+								<%= signout %>
+							</button>
+						</form>
+					<%}%>
+				</div>
+			</div>
+		</div>
+	</section>
+</header>

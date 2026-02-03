@@ -1,0 +1,28 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/typescript-node
+{
+	"name": "RP Sim Dev Container",
+	"image": "mcr.microsoft.com/devcontainers/go:bookworm",
+	"features": {
+		"ghcr.io/devcontainers/features/node:1": {
+			"version": "lts",
+			"nodeGypDependencies": true
+		},
+		"ghcr.io/devcontainers/features/docker-in-docker:2": {},
+		"ghcr.io/devcontainers/features/aws-cli:1": {
+			"version": "latest"
+		}
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"GitHub.copilot",
+				"redhat.vscode-yaml",
+				"eamodio.gitlens",
+				"github.vscode-github-actions",
+				"ms-vscode.makefile-tools",
+				"jebbs.plantuml"
+			]
+		}
+	}
+}

@@ -1,0 +1,5 @@
+{
+  "mode": "all",
+  "steppers": ["vars", "haibun", "~@haibun/web-http","~@haibun/web-playwright"],
+  "features": {}
+}

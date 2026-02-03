@@ -1,0 +1,46 @@
+{
+  "name": "oidc-rp-simulator",
+  "version": "0.0.1",
+  "description": "Source code and configuration for the Sign in Canada OIDC Relying Party Simulator",
+  "main": "index.js",
+  "scripts": {
+    "start": "ts-node src/rp-server",
+    "build": "tsc",
+    "start:prod": "node build/src/rp-server.js",
+    "nodemon": "nodemon --watch \"src/**\" --ext \"ts,json\"  --exec \"ts-node src/rp-server.ts\"",
+    "test": "haibun-cli test",
+    "tsc-watch": "tsc --watch",
+    "test-firefox": "HAIBUN_SPLIT_SHARED=a-browser=firefox haibun-cli test",
+    "test-many": "HAIBUN_SPLIT_SHARED='a-browser=chromium,webkit,firefox,chromium.iPhone 6,chromium.iPad (gen 7) landscape,chromium.iPad Mini,chromium.Pixel 5,chromium.iPhone X landscape,chromium.Kindle Fire HDX,chromium.Moto G4 landscape' haibun-cli test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sign-in-canada/OIDC-RP-Simulator"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sign-in-canada/OIDC-RP-Simulator/issues"
+  },
+  "homepage": "https://github.com/sign-in-canada/OIDC-RP-Simulator#readme",
+  "dependencies": {
+    "@haibun/cli": "^0.1.2",
+    "@haibun/web-http": "^0.1.1",
+    "@haibun/web-playwright": "^0.2.2",
+    "@types/express": "^4.17.13",
+    "@types/http-errors": "^1.8.1",
+    "@types/openid-client": "^3.7.0",
+    "dotenv": "^17.2.1",
+    "ejs": "^3.1.6",
+    "express": "^4.21.2",
+    "express-session": "^1.18.2",
+    "http-errors": "^2.0.0",
+    "openid-client": "^5.1.1",
+    "passport": "^0.5.3",
+    "ts-node": "^10.4.0"
+  },
+  "devDependencies": {
+    "@types/dotenv": "^6.1.1",
+    "typescript": "^4.5.4"
+  }
+}

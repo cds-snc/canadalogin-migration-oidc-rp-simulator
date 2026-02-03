@@ -1,0 +1,62 @@
+<form action="/login" class="mrgn-lft-md mrgn-rght-md">
+	<div class="row">
+		<div class="form-group">
+			<label for="scope"><%= param_scope %></label>
+			<select class="form-control maxwidth" id="scope" onchange="storeVal(this.id, this.value);">
+				<option value="o" selected>openid</option>
+				<option value="op">openid profile</option>
+				<option value="ope">openid profile email</option>
+			</select>
+		</div>
+		<div class="form-group">
+			<label for="prompt">Prompt</label>
+			<select class="form-control maxwidth" id="prompt" onchange="storeVal(this.id, this.value);">
+				<option value="empty" selected></option>
+				<option value="l">login</option>
+				<option value="n">none</option>
+				<option value="lc">login consent</option>
+				<option value="s">select_account</option>
+				<option value="c">consent</option>
+				<option value="ls">login select_account</option>
+			</select>
+		</div>
+
+		<div class="form-group">
+			<label for="max_age">Max_age</label>
+			<input type="number" class="form-control" id="max_age" value="1200" onchange="storeVal(this.id, this.value);"></input>
+		</div>
+
+		<div class="form-group">
+			<label for="acr_values">Acr_values</label>
+			<input type="text" class="form-control" id="acr_values" value="" placeholder="gckey, mfa, ..." onchange="storeVal(this.id, this.value);"></input>
+		</div>
+
+		<div class="form-group">
+			<label for="redirect_uri">Redirect_uri</label>
+			<input type="text" class="form-control" id="redirect_uri" value="" onchange="storeVal(this.id, this.value);"></input>
+		</div>
+
+		<ul class="list-unstyled">
+			<li class="checkbox gc-chckbxrdio">
+				<input type="checkbox" id="ui_locales" onclick="storeVal(this.id, this.checked);" checked></input>
+				<label for="ui_locales">Ui_locales</label>
+			</li>
+			<li class="checkbox gc-chckbxrdio">
+				<input type="checkbox" id="nonce" onclick="storeVal(this.id, this.checked);" checked></input>
+				<label for="nonce">Nonce</label>
+			</li>
+			<li class="checkbox gc-chckbxrdio">
+				<input type="checkbox" id="login_hint" onclick="storeVal(this.id, this.checked);" unchecked></input>
+				<label for="login_hint">Login_hint</label>
+			</li>
+			<li class="checkbox gc-chckbxrdio">
+				<input type="checkbox" id="id_token_hint" onclick="storeVal(this.id, this.checked);" checked></input>
+				<label for="id_token_hint">Id_token_hint</label>
+			</li>
+		</ul>
+
+		<div class="col-md-6">
+			<button type="reset" class="btn btn-default" onclick="clearValues();"><%= clear %></button>
+		</div>
+	</div>
+</form>

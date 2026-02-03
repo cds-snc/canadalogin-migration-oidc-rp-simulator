@@ -1,0 +1,105 @@
+<% if ( lang == 'fr' ) { %>
+	<h2 class="mrgn-tp-0 h4 text-info"><span class="fa fa-exclamation-triangle"></span> Aide</h2>
+	<div class="wb-tabs">
+		<div class="tabpanels">
+			<details id="details-panel1" open="open">
+				<summary><small>scope</small></summary>
+				<p>CHAMPS OBLIGATOIRES. Les demandes OpenID Connect DOIVENT contenir la valeur de la portée d'autorisation openid. Si la valeur openid n'est pas présente, le comportement est entièrement non spécifié. D'autres valeurs de domaine PEUVENT être présentes. Les valeurs de portée utilisées qui ne sont pas comprises par une implémentation DEVRAIENT être ignorées.</p>
+			</details>
+			<details id="details-panel2">
+				<summary><small>prompt</small></summary>
+				<p>OPTIONNEL. Liste de valeurs de chaînes ASCII, séparées par des espaces et respectant la casse, spécifiant si le serveur d'autorisations invite l'utilisateur final à demander une nouvelle authentification et son consentement.</p>
+				<p>Les valeurs définies sont:<br></p>
+				<p style="font-size: 14px;">
+					<b>none:</b> le serveur d'autorisations NE DOIT PAS afficher de pages d'interface utilisateur d'authentification ou de consentement.<br>
+					<b>login:</b> le serveur d'autorisation DEVRAIT demander à l'utilisateur final une nouvelle authentification.<br>
+					<b>consent:</b> le serveur d'autorisation DEVRAIT demander à l'utilisateur final son consentement avant de retourner les informations au client.<br>
+					<b>select_account:</b> le serveur d'autorisation DEVRAIT demander à l'utilisateur final de sélectionner un compte d'utilisateur.<br>	
+				</p>
+			</details>
+			<details id="details-panel3">
+				<summary><small>max_age</small></summary>
+				<p>OPTIONNEL. Âge d'authentification maximum. Spécifie le temps écoulé autorisé en secondes depuis la dernière fois que l'utilisateur final a été authentifié activement par l'OP. Si le temps écoulé est supérieur à cette valeur, l'OP DOIT tenter de ré-authentifier activement l'utilisateur final.</p>
+			</details>
+			<details id="details-panel4">
+				<summary><small>acr_values</small></summary>
+				<p>OPTIONNEL. Valeur de "Requested Authentication Context Class Reference". Chaîne séparée par des espaces spécifiant les valeurs acr que le serveur d'autorisations est invité à utiliser pour traiter cette demande d'authentification, les valeurs apparaissant par ordre de préférence.</p>
+				<p>Exemples:<br></p>
+				<p style="font-size: 14px;">
+					<b>gckey:</b> cela activera l'accès direct à CleGC (si le client décide de ne pas utiliser les pages typiques de Authenti-Canada).<br>
+					<b>mfa:</b> pour activer le mfa en utilisant le fournisseur "mfa" de passport par défaut, qui est le client personnalisé de Authenti-Canada configuré dans 2ndFaaS.<br>
+				</p>
+			</details>
+			<details id="details-panel5">
+				<summary><small>redirect_uri</small></summary>
+				<p>CHAMPS OBLIGATOIRES. URI de redirection auquel la réponse sera envoyée. Cet URI DOIT correspondre exactement à l'une des valeurs d'URI de redirection pour le client préenregistré auprès du fournisseur OpenID.</p>
+			</details>
+			<details id="details-panel6">
+				<summary><small>ui_locales</small></summary>
+				<p>OPTIONNEL. Langues et scripts préférés de l'utilisateur final pour l'interface utilisateur, représentés par une liste de valeurs d'étiquette de langue séparées par des espaces, triées par préférence. Par exemple, la valeur "fr-CA fr en" représente une préférence pour le français parlé au Canada, puis le français (sans désignation de région), suivi de l'anglais (sans désignation de région).<br></p>						
+				<p>Lorsque cette option est sélectionnée, le paramètre ui_locales de la demande aura la valeur de la langue actuelle choisie par l'utilisateur final.</p>		
+			</details>
+			<details id="details-panel7">
+				<summary><small>nonce</small></summary>
+				<p>OPTIONNEL. Valeur de chaîne utilisée pour associer une session client à un jeton d'ID et pour limiter les attaques de relecture. La valeur est transmise non modifiée de la demande d'authentification au jeton d'ID.</p>
+			</details>
+			<details id="details-panel8">
+				<summary><small>login_hint</small></summary>
+				<p>OPTIONNEL. Indication au serveur d'autorisations sur l'identifiant de connexion que l'utilisateur final peut utiliser pour se connecter (si nécessaire). Cet indice peut être utilisé par un RP s'il demande d'abord à l'adresse électronique (ou à un autre identifiant) de messagerie électronique, puis de transmettre cette valeur au conseil en tant qu'indicateur. Cette valeur PEUT aussi être un numéro de téléphone dans le format spécifié pour la revendication n ° de téléphone.</p>
+			</details>
+		</div>
+	</div>
+<%} else {%>
+	<h2 class="mrgn-tp-0 h4 text-info"><span class="fa fa-exclamation-triangle"></span> Help</h2>
+	<div class="wb-tabs">
+		<div class="tabpanels">
+			<details id="details-panel1" open="open">
+				<summary><small>scope</small></summary>
+				<p>REQUIRED. OpenID Connect requests MUST contain the openid scope value. If the openid scope value is not present, the behavior is entirely unspecified. Other scope values MAY be present. Scope values used that are not understood by an implementation SHOULD be ignored.</p>
+			</details>
+			<details id="details-panel2">
+				<summary><small>prompt</small></summary>
+				<p>Space delimited, case sensitive list of ASCII string values that specifies whether the Authorization Server prompts the End-User for reauthentication and consent.</p>
+				<p>The defined values are:<br></p>
+				<p style="font-size: 14px;">
+					<b>none:</b> the Authorization Server MUST NOT display any authentication or consent user interface pages.<br>
+					<b>login:</b> the Authorization Server SHOULD prompt the End-User for reauthentication.<br>
+					<b>consent:</b> the Authorization Server SHOULD prompt the End-User for consent before returning information to the Client.<br>
+					<b>select_account:</b> the Authorization Server SHOULD prompt the End-User to select a user account.<br>
+				</p>	
+				<p>The prompt parameter can be used by the Client to make sure that the End-User is still present for the current session or to bring attention to the request.</p>
+			</details>
+			<details id="details-panel3">
+				<summary><small>max_age</small></summary>
+				<p>OPTIONAL. Maximum Authentication Age. Specifies the allowable elapsed time in seconds since the last time the End-User was actively authenticated by the OP. If the elapsed time is greater than this value, the OP MUST attempt to actively re-authenticate the End-User.</p>
+			</details>
+			<details id="details-panel4">
+				<summary><small>acr_values</small></summary>
+				<p>OPTIONAL. Requested Authentication Context Class Reference values. Space-separated string that specifies the acr values that the Authorization Server is being requested to use for processing this Authentication Request, with the values appearing in order of preference.</p>
+				<p>Examples:<br></p>
+				<p style="font-size: 14px;">
+					<b>gckey:</b> this will enable the direct pass through to GCKey (if client decides not to use the SIC Chooser page).<br>
+					<b>mfa:</b> this will enable mfa using the default "mfa" passport provider which is the Sign In Canada branded client configured on the 2ndFaaS.<br>
+				</p>
+			</details>
+			<details id="details-panel5">
+				<summary><small>redirect_uri</small></summary>
+				<p>Redirection URI to which the response will be sent. This URI MUST exactly match one of the Redirection URI values for the Client pre-registered at the OpenID Provider.</p>
+			</details>
+			<details id="details-panel6">
+				<summary><small>ui_locales</small></summary>
+				<p>OPTIONAL. End-User's preferred languages and scripts for the user interface, represented as a space-separated list of language tag values, ordered by preference. For instance, the value "fr-CA fr en" represents a preference for French as spoken in Canada, then French (without a region designation), followed by English (without a region designation).<br></p>
+				<p>When this option is selected, the ui_locales parameter of the request will be set to the current language chosen by the End-User.</p>
+			</details>
+			<details id="details-panel7">
+				<summary><small>nonce</small></summary>
+				<p>OPTIONAL. String value used to associate a Client session with an ID Token, and to mitigate replay attacks. The value is passed through unmodified from the Authentication Request to the ID Token.</p>
+			</details>
+			<details id="details-panel8">
+				<summary><small>login_hint</small></summary>
+				<p>OPTIONAL. Hint to the Authorization Server about the login identifier the End-User might use to log in (if necessary). This hint can be used by an RP if it first asks the End-User for their e-mail address (or other identifier) and then wants to pass that value as a hint to the discovered authorization service. It is RECOMMENDED that the hint value match the value used for discovery. This value MAY also be a phone number in the format specified for the phone_number Claim.</p>
+			</details>
+		</div>
+	</div>
+<%}%>
+
