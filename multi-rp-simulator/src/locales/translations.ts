@@ -45,7 +45,6 @@ export const locales_en = {
   parameter: 'Parameter',
   value: 'Value',
   expired_session_error: 'Session has expired or could not be found',
-  signInPage_link: 'http://localhost:8080/rpsim/signinpage/en',
   loginMigration_link: 'http://localhost:8080/rpsim/loginMigration/en'
 };
 
@@ -96,7 +95,6 @@ export const locales_fr = {
   parameter: 'Paramètre',
   value: 'Valeur',
   expired_session_error: 'La session a expiré ou est introuvable',
-  signInPage_link: 'http://localhost:8080/rpsim/signinpage/fr',
   loginMigration_link: 'http://localhost:8080/rpsim/loginMigration/fr'
 
 };
