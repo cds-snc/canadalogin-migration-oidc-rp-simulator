@@ -496,7 +496,7 @@ function logDiscoveryError(clientName: string, url: string, error: any) {
 function buildWellKnownUrl(issuerUrl: string) {
   const [base, query] = issuerUrl.split('?', 2);
   const trimmedBase = base.endsWith('/') ? base.slice(0, -1) : base;
-  const wellKnownPath = trimmedBase.endsWith('/oauth2')
+  const wellKnownPath = trimmedBase.endsWith('/oauth2') || trimmedBase.endsWith('/oxauth') 
     ? `${trimmedBase}/.well-known/openid-configuration`
     : `${trimmedBase}/oauth2/.well-known/openid-configuration`;
 
