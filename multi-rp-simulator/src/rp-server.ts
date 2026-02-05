@@ -46,17 +46,34 @@ function uniq(arr: string[]): string[] {
 /**
  * Helper to resolve the Sign-In page link from env/config.
  */
-function getSignInPageLink(lang?: string): string | undefined {
+function getLoginMigrationLink(lang?: string): string | undefined {
   const appendLang = (base: string): string => {
-    if (!lang) return base;
+    if (!lang) return `${base}/en`;
     const trimmed = base.endsWith('/') ? base.slice(0, -1) : base;
     return `${trimmed}/${lang}`;
   };
 
   // Prefer env var for local/dev/prod deployments
-  const fromEnv = process.env.MIGRATION_SIGNINPAGE_LINK || process.env.MIGRATION_SIGNINPAGE_LINK;
+  const fromEnv = process.env.PUBLIC_BASE_URL + "/rpsim/loginMigration";
+
+  console.log("getLoginMigrationLink:" + appendLang(fromEnv));
   return appendLang(fromEnv);
 }
+
+function getSignInPageLink(lang?: string): string | undefined {
+  const appendLang = (base: string): string => {
+    if (!lang) return `${base}/en`;
+    const trimmed = base.endsWith('/') ? base.slice(0, -1) : base;
+    return `${trimmed}/${lang}`;
+  };
+
+  // Prefer env var for local/dev/prod deployments
+  const fromEnv = process.env.PUBLIC_BASE_URL + "/rpsim/signinpage";
+
+  console.log("getSignInPageLink:" + appendLang(fromEnv));
+  return appendLang(fromEnv);
+}
+
 
 /**
 
@@ -190,6 +207,8 @@ export class ServerExpress {
         case 'login':
           data = {
             ...data,
+            signInPageLink: getSignInPageLink(req.params.lang),
+            loginMigrationLoginLink: getLoginMigrationLink(req.params.lang),
             oidc_clients: oidc_clients.map((item) => { return { name: item.name, description: item.description, sic: item.sic } })
           }
           res.render('login', data)
@@ -198,6 +217,7 @@ export class ServerExpress {
           data = {
             ...data,
             signInPageLink: getSignInPageLink(req.params.lang),
+            loginMigrationLoginLink: getLoginMigrationLink(req.params.lang),
             oidc_clients: oidc_clients.map((item) => { return { name: item.name, description: item.description, sic: item.sic } })
           }
           res.render('loginMigration', data)
@@ -206,6 +226,7 @@ export class ServerExpress {
           data = {
             ...data,
             signInPageLink: getSignInPageLink(req.params.lang),
+            loginMigrationLoginLink: getLoginMigrationLink(req.params.lang),
             oidc_clients: oidc_clients.map((item) => { return { name: item.name, description: item.description, sic: item.sic } })
           }
           res.render('FCACHomePage', data)
@@ -213,6 +234,8 @@ export class ServerExpress {
         case 'signinpage':
           data = {
             ...data,
+            signInPageLink: getSignInPageLink(req.params.lang),
+            loginMigrationLoginLink: getLoginMigrationLink(req.params.lang),
             oidc_clients: oidc_clients.map((item) => { return { name: item.name, description: item.description, sic: item.sic } })
           }
           res.render('signInPage', data)
@@ -230,6 +253,8 @@ export class ServerExpress {
         default:
           data = {
             ...data,
+            signInPageLink: getSignInPageLink(req.params.lang),
+            loginMigrationLoginLink: getLoginMigrationLink(req.params.lang),
             oidc_clients: oidc_clients.map((item) => { return { name: item.name, description: item.description } })
           }
           res.render('login', data)
