@@ -97,7 +97,7 @@
     }
   };
 
-  export const oidc_clients = [client1, client2, client3].filter(client => client.ap !== undefined);
+  export const oidc_clients = [client1, client2, client3, client4].filter(client => client.ap !== undefined);
 
   export const ui_config = {
     client_label: 'RP1',
