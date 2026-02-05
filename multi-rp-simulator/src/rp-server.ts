@@ -205,6 +205,7 @@ export class ServerExpress {
         case 'FCACHomePage':
           data = {
             ...data,
+            signInPageLink: getSignInPageLink(req.params.lang),
             oidc_clients: oidc_clients.map((item) => { return { name: item.name, description: item.description, sic: item.sic } })
           }
           res.render('FCACHomePage', data)
