@@ -8,7 +8,84 @@ import { locales_en, locales_fr } from './locales/translations';
 
 import { OpenIDConnectStrategy } from './strategy';
 
+
 export const DEFAULT_PORT = process.env.PORT || 8080;
+
+// Public/base URL used to construct redirect URIs when running behind a proxy or in deployed environments.
+// Prefer setting PUBLIC_BASE_URL (e.g., https://rpsim.example.gc.ca) in your .env.
+const PUBLIC_BASE_URL = process.env.PUBLIC_BASE_URL;
+
+function inferBaseUrl(req: express.Request): string | undefined {
+  const xfProto = (req.headers['x-forwarded-proto'] as string | undefined);
+  const xfHost = (req.headers['x-forwarded-host'] as string | undefined);
+  const proto = (xfProto || (req as any).protocol) as string | undefined;
+  const host = (xfHost || req.get('host')) as string | undefined;
+  if (!proto || !host) return undefined;
+  return `${proto}://${host}`;
+}
+
+function computeBaseUrl(req: express.Request, port: string | number): string {
+  return (
+    PUBLIC_BASE_URL ||
+    inferBaseUrl(req) ||
+    `http://localhost:${port}`
+  );
+}
+
+function parseCsvUris(value: string | undefined): string[] {
+  if (!value) return [];
+  return value
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
+
+function uniq(arr: string[]): string[] {
+  return Array.from(new Set(arr));
+}
+
+/**
+ * Returns the redirect URIs list to be used for the sector_identifier_uri document.
+ *
+ * This is intentionally NOT provider-specific: for pairwise/sector calculations,
+ * OPs commonly expect the complete list of redirect URIs in the same sector.
+ *
+ * Configure in .env as a single comma-separated list:
+ *   SECTOR_REDIRECT_URIS=https://.../auth/callback/sic,https://.../auth/callback/gckey,...
+ */
+function getSectorRedirectUris(req: express.Request, port: string | number): string[] {
+  const fromEnv = parseCsvUris(process.env.SECTOR_REDIRECT_URIS);
+  if (fromEnv.length) return uniq(fromEnv);
+
+  // Fallback: union all configured redirect_uris from oidc client config.
+  const collected: string[] = [];
+  try {
+    for (const c of (oidc_clients as any[])) {
+      const configured = (c?.config?.redirect_uris || []) as string[];
+      collected.push(...configured);
+    }
+  } catch {
+    // ignore
+  }
+  if (collected.length) return uniq(collected);
+
+  // Last resort: build a default callback per configured client.
+  const baseUrl = computeBaseUrl(req, port);
+  const defaults: string[] = [];
+  try {
+    for (const c of (oidc_clients as any[])) {
+      if (c?.name) defaults.push(`${baseUrl}/auth/callback/${c.name}`);
+    }
+  } catch {
+    // ignore
+  }
+  return uniq(defaults);
+}
+
+// Kept for backwards compatibility with existing call sites, but now returns the full sector list.
+function getSectorRedirectUrisForClient(cli: any, req: express.Request, port: string | number): string[] {
+  return getSectorRedirectUris(req, port);
+}
 
 interface RequestWithUserSession extends express.Request {
   user?: any,
@@ -21,10 +98,12 @@ passport.deserializeUser((user, done) => done(null, user));
 export class ServerExpress {
   static mounted: { [named: string]: string } = {};
   listener: import('http').Server;
+  publicBaseUrl?: string;
 
   async start(port = DEFAULT_PORT) {
     const params = { scope: ['openid'] };
     const app = express();
+    const resolvedPort = port;
     app.set('trust proxy', 1) // trust first proxy
 
     app.use(
@@ -46,6 +125,22 @@ export class ServerExpress {
     setupStrategies();
 
     app.get('/health', (req, res) => res.status(200).send('OK'));
+
+    // Sector Identifier URI endpoint (used for OIDC pairwise subject identifier calculations).
+    // Returns a JSON array of redirect URIs for the sector.
+    // Configure as a full list via SECTOR_REDIRECT_URIS in .env.
+    //
+    // Recommended OP config: sector_identifier_uri = "https://.../sector-identifier"
+    app.get('/sector-identifier', (req, res) => {
+      const redirectUris = getSectorRedirectUris(req, resolvedPort);
+      return res.status(200).json(redirectUris);
+    });
+
+    // Backwards-compatible alias (ignores provider and returns the same full list)
+    app.get('/sector-identifier/:provider', (req, res) => {
+      const redirectUris = getSectorRedirectUris(req, resolvedPort);
+      return res.status(200).json(redirectUris);
+    });
 
     //app.get('/', (req, res) => res.render('index', { ui_config: ui_config }));
     app.get('/', (req, res) => {
@@ -195,9 +290,11 @@ export class ServerExpress {
 
       const currentLocale = rawLocale && rawLocale !== "undefined" ? rawLocale : "en";
 
-      const redirectUri = `http://localhost:8080/rpsim/response/${currentLocale}`;
-      console.log(redirectUri)
+      const baseUrl = computeBaseUrl(req, resolvedPort);
+      this.publicBaseUrl = baseUrl;
 
+      const redirectUri = `${baseUrl}/rpsim/response/${currentLocale}`;
+      console.log(redirectUri)
 
       res.redirect(redirectUri);
     });
@@ -295,7 +392,7 @@ export class ServerExpress {
       });
     });
 
-    this.listener = await app.listen(port, () => console.log(`Server listening on port: ${port}`));
+    this.listener = await app.listen(port, () => console.log(`Server listening on port: ${resolvedPort}`));
   }
 }
 
