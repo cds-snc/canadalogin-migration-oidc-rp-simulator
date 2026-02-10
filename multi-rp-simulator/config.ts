@@ -29,6 +29,11 @@
   };
 
   export const sessionSecret = env('SESSION_SECRET') as string;
+
+  // Print the session secret length.
+  console.log(`XXXXXXXXXXX Session secret length: ${sessionSecret.length}`);
+
+
   // The redirect URI for the RP simulator has to have a the name in the callback URL
   // Name is client1, client2, etc.
   // Reduct URI example: ...../callback/client1
