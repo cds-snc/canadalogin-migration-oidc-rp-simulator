@@ -5,7 +5,7 @@ import { deserialize, serialize } from 'v8';
 import { BaseClient, errors, generators } from 'openid-client';
 
 const cloneDeep =
-  globalThis.structuredClone || ((obj) => deserialize(serialize(obj)));
+  globalThis.structuredClone || ((obj) => deserialize(serialize(obj) as any));
 
 const pick = (object, ...paths) => {
   const obj = {};

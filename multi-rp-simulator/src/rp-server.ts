@@ -261,11 +261,19 @@ export class ServerExpress {
       }
     });
 
-    app.get('/auth/callback/:provider', async (req, res, next) => {
-      const provider = req.params.provider
+    app.get('/auth/callback/:provider', async (req: RequestWithUserSession, res, next) => {
+      const callbackProvider = req.params.provider
+      const provider = req.session?.authProvider || callbackProvider;
+      if (req.session?.authProvider) {
+        delete req.session.authProvider;
+      }
       
       console.log(" ========= /auth/callback/:provider")
       console.log(provider)
+
+      if (provider !== callbackProvider) {
+        console.log(`[oidc] callback provider mismatch: path=${callbackProvider} session=${provider}`);
+      }
 
       if (!(await ensureStrategy(provider))) {
         return res.status(500).render('error', {
@@ -314,6 +322,9 @@ export class ServerExpress {
         skipMigration: toSkip,
         lang: currentLocale       // <— your injected value
       };
+
+      // Keep track of the selected provider so callback processing can use the same OIDC client.
+      req.session.authProvider = provider;
 
       passport.authenticate(provider, opts as any)(req, res, next);
     });
@@ -477,6 +488,12 @@ async function registerStrategy(cli, params) {
   console.log(`[oidc] discover start: ${cli.name} -> ${discoverUrl}`);
   try {
     const issuer = await Issuer.discover(discoverUrl);
+    console.log(`[oidc] issuer token auth methods: ${cli.name}`, issuer.token_endpoint_auth_methods_supported);
+    console.log(`[oidc] register client config: ${cli.name}`, {
+      client_id: cli.config?.client_id,
+      redirect_uris: cli.config?.redirect_uris,
+      token_endpoint_auth_method: cli.config?.token_endpoint_auth_method
+    });
     const client = new issuer.Client(cli.config);
     passport.use(
       cli.name,
@@ -542,4 +559,3 @@ function getLocale(req: RequestWithUserSession) {
 }
 
 new ServerExpress().start();
-
