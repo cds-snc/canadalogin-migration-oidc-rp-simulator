@@ -1,11 +1,10 @@
 import url from 'url';
 import { format } from 'util';
 
-import { deserialize, serialize } from 'v8';
 import { BaseClient, errors, generators } from 'openid-client';
 
 const cloneDeep =
-  globalThis.structuredClone || ((obj) => deserialize(serialize(obj) as any));
+  globalThis.structuredClone || ((obj) => JSON.parse(JSON.stringify(obj)));
 
 const pick = (object, ...paths) => {
   const obj = {};
