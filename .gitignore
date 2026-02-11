@@ -105,3 +105,9 @@ dist
 # TernJS port file
 .tern-port
 .DS_Store
+
+# simulator build output
+multi-rp-simulator/build/
+
+# Codex local metadata
+.codex/
