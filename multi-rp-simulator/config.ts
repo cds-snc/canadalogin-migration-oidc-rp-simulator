@@ -64,7 +64,7 @@
       client_id: env('CLIENT2_CLIENT_ID'),
       client_secret: env('CLIENT2_CLIENT_SECRET'),
       grant_types: ['refresh_token', 'authorization_code', 'openid'],
-      redirect_uris: envList('CLIENT2_REDIRECT_URIS', ['http://localhost:8080/auth/callback/client1']),
+      redirect_uris: envList('CLIENT2_REDIRECT_URIS', ['http://localhost:8080/auth/callback/client2']),
       post_logout_redirect_uris: envList('CLIENT2_POST_LOGOUT_REDIRECT_URIS', ['http://localhost:8080/logout/callback']),
       token_endpoint_auth_method: (env('CLIENT2_TOKEN_ENDPOINT_AUTH_METHOD', 'client_secret_post') as ClientAuthMethod),
     }
@@ -80,7 +80,7 @@
       client_id: env('CLIENT3_CLIENT_ID'),
       client_secret: env('CLIENT3_CLIENT_SECRET'),
       grant_types: ['refresh_token', 'authorization_code', 'openid'],
-      redirect_uris: envList('CLIENT3_REDIRECT_URIS', ['http://localhost:8080/auth/callback/client1']),
+      redirect_uris: envList('CLIENT3_REDIRECT_URIS', ['http://localhost:8080/auth/callback/client3']),
       post_logout_redirect_uris: envList('CLIENT3_POST_LOGOUT_REDIRECT_URIS', ['http://localhost:8080/logout/callback']),
       token_endpoint_auth_method: (env('CLIENT3_TOKEN_ENDPOINT_AUTH_METHOD', 'client_secret_post') as ClientAuthMethod),
     }
@@ -96,7 +96,7 @@
       client_id: env('CLIENT4_CLIENT_ID'),
       client_secret: env('CLIENT4_CLIENT_SECRET'),
       grant_types: ['refresh_token', 'authorization_code', 'openid'],
-      redirect_uris: envList('CLIENT4_REDIRECT_URIS', ['http://localhost:8080/auth/callback/client1']),
+      redirect_uris: envList('CLIENT4_REDIRECT_URIS', ['http://localhost:8080/auth/callback/client4']),
       post_logout_redirect_uris: envList('CLIENT4_POST_LOGOUT_REDIRECT_URIS', ['http://localhost:8080/logout/callback']),
       token_endpoint_auth_method: (env('CLIENT4_TOKEN_ENDPOINT_AUTH_METHOD', 'client_secret_basic') as ClientAuthMethod),
     }
