@@ -262,17 +262,18 @@ export class ServerExpress {
     });
 
     app.get('/auth/callback/:provider', async (req: RequestWithUserSession, res, next) => {
-      const callbackProvider = req.params.provider
-      const provider = req.session?.authProvider || callbackProvider;
-      if (req.session?.authProvider) {
+      const callbackProvider = req.params.provider;
+      const sessionProvider = req.session?.authProvider;
+      const provider = callbackProvider;
+      if (sessionProvider) {
         delete req.session.authProvider;
       }
-      
-      console.log(" ========= /auth/callback/:provider")
-      console.log(provider)
 
-      if (provider !== callbackProvider) {
-        console.log(`[oidc] callback provider mismatch: path=${callbackProvider} session=${provider}`);
+      console.log(" ========= /auth/callback/:provider");
+      console.log(provider);
+
+      if (sessionProvider && sessionProvider !== callbackProvider) {
+        console.warn(`[oidc] callback provider mismatch: path=${callbackProvider} session=${sessionProvider}. Ignoring session provider value.`);
       }
 
       if (!(await ensureStrategy(provider))) {
