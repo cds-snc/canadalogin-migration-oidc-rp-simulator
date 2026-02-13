@@ -53,8 +53,10 @@ function getLoginMigrationLink(lang?: string): string | undefined {
     return `${trimmed}/${lang}`;
   };
 
-  // Prefer env var for local/dev/prod deployments
-  const fromEnv = process.env.PUBLIC_BASE_URL + "/rpsim/loginMigration";
+  // Prefer PUBLIC_BASE_URL when available; otherwise fall back to an in-app relative path.
+  const fromEnv = process.env.PUBLIC_BASE_URL
+    ? `${process.env.PUBLIC_BASE_URL}/rpsim/loginMigration`
+    : '/rpsim/loginMigration';
 
   console.log("getLoginMigrationLink:" + appendLang(fromEnv));
   return appendLang(fromEnv);
@@ -67,11 +69,65 @@ function getSignInPageLink(lang?: string): string | undefined {
     return `${trimmed}/${lang}`;
   };
 
-  // Prefer env var for local/dev/prod deployments
-  const fromEnv = process.env.PUBLIC_BASE_URL + "/rpsim/signinpage";
+  // Prefer PUBLIC_BASE_URL when available; otherwise fall back to an in-app relative path.
+  const fromEnv = process.env.PUBLIC_BASE_URL
+    ? `${process.env.PUBLIC_BASE_URL}/rpsim/signinpage`
+    : '/rpsim/signinpage';
 
   console.log("getSignInPageLink:" + appendLang(fromEnv));
   return appendLang(fromEnv);
+}
+
+type SignInFlow = 'all' | 'no-interac';
+type OidcClient = (typeof oidc_clients)[number];
+
+function parseSignInFlow(flow: unknown): SignInFlow {
+  const normalized = Array.isArray(flow) ? flow[0] : flow;
+  return normalized === 'no-interac' ? 'no-interac' : 'all';
+}
+
+function resolveFlowClient(envKey: string, fallbackIndex: number): OidcClient | undefined {
+  const configuredName = process.env[envKey];
+
+  if (configuredName) {
+    const configuredClient = oidc_clients.find((item) => item.name === configuredName);
+    if (configuredClient) {
+      return configuredClient;
+    }
+    console.warn(`[flows] ${envKey}="${configuredName}" does not match a configured client. Falling back.`);
+  }
+
+  return oidc_clients[fallbackIndex] || oidc_clients[0];
+}
+
+function getSignInFlowClients() {
+  return {
+    registerClient: resolveFlowClient('FLOW_REGISTER_CLIENT', 2),
+    gcSigninClient: resolveFlowClient('FLOW_GCSIGNIN_CLIENT', 2),
+    gcKeyClient: resolveFlowClient('FLOW_GCKEY_CLIENT', 1),
+    interacClient: resolveFlowClient('FLOW_INTERAC_CLIENT', 1),
+  };
+}
+
+function getSignInMenuLink(page: string, lang: string, flow: SignInFlow, fallback: string): string {
+  switch (page) {
+    case 'testflows':
+    case 'FCACHomePage':
+      // Default to Flow A when no specific flow has been selected yet.
+      return `/rpsim/flow-all/${lang}`;
+    case 'flow-all-home':
+    case 'flow-all':
+      return `/rpsim/flow-all/${lang}`;
+    case 'flow-no-interac-home':
+    case 'flow-no-interac':
+      return `/rpsim/flow-no-interac/${lang}`;
+    case 'signinpage':
+      return flow === 'no-interac'
+        ? `/rpsim/flow-no-interac/${lang}`
+        : `/rpsim/flow-all/${lang}`;
+    default:
+      return fallback;
+  }
 }
 
 
@@ -177,7 +233,7 @@ export class ServerExpress {
 
     //app.get('/', (req, res) => res.render('index', { ui_config: ui_config }));
     app.get('/', (req, res) => {
-      res.redirect('/rpsim/FCACHomePage/en');
+      res.redirect('/rpsim/testflows/en');
     });
 
     app.get('/rpsim/:page/:lang', (req: RequestWithUserSession, res) => {
@@ -200,6 +256,15 @@ export class ServerExpress {
         ui_config: ui_config,
         isLoggedIn: req.user != undefined
       }
+      const signInFlow = parseSignInFlow(req.query.flow);
+      const flowClients = getSignInFlowClients();
+      const loginMigrationLoginLink = getLoginMigrationLink(req.params.lang) || `/rpsim/loginMigration/${req.params.lang}`;
+      const signInMenuLink = getSignInMenuLink(req.params.page, req.params.lang, signInFlow, loginMigrationLoginLink);
+      data = {
+        ...data,
+        loginMigrationLoginLink: loginMigrationLoginLink,
+        signInMenuLink: signInMenuLink
+      }
       console.log("========= rpsim endpoint ====== ")
       console.log(req.params.page)
 
@@ -208,7 +273,6 @@ export class ServerExpress {
           data = {
             ...data,
             signInPageLink: getSignInPageLink(req.params.lang),
-            loginMigrationLoginLink: getLoginMigrationLink(req.params.lang),
             oidc_clients: oidc_clients.map((item) => { return { name: item.name, description: item.description, sic: item.sic } })
           }
           res.render('login', data)
@@ -217,26 +281,52 @@ export class ServerExpress {
           data = {
             ...data,
             signInPageLink: getSignInPageLink(req.params.lang),
-            loginMigrationLoginLink: getLoginMigrationLink(req.params.lang),
             oidc_clients: oidc_clients.map((item) => { return { name: item.name, description: item.description, sic: item.sic } })
           }
           res.render('loginMigration', data)
           break;
         case 'FCACHomePage':
+        case 'testflows':
           data = {
             ...data,
             signInPageLink: getSignInPageLink(req.params.lang),
-            loginMigrationLoginLink: getLoginMigrationLink(req.params.lang),
-            oidc_clients: oidc_clients.map((item) => { return { name: item.name, description: item.description, sic: item.sic } })
+            oidc_clients: oidc_clients.map((item) => { return { name: item.name, description: item.description, sic: item.sic } }),
+            flowAllPageLink: `/rpsim/flow-all-home/${req.params.lang}`,
+            flowNoInteracPageLink: `/rpsim/flow-no-interac-home/${req.params.lang}`,
+            manualClientSelectionLink: `/rpsim/login/${req.params.lang}`
           }
           res.render('FCACHomePage', data)
           break;
+        case 'flow-all-home':
+        case 'flow-no-interac-home': {
+          data = {
+            ...data
+          }
+          res.render('flowHomePage', data)
+          break;
+        }
+        case 'flow-all':
+        case 'flow-no-interac': {
+          const flowFromPage: SignInFlow = req.params.page === 'flow-no-interac' ? 'no-interac' : 'all';
+          data = {
+            ...data,
+            signInPageLink: `/rpsim/signinpage/${req.params.lang}?flow=${flowFromPage}`,
+            oidc_clients: oidc_clients.map((item) => { return { name: item.name, description: item.description, sic: item.sic } }),
+            registerLink: flowClients.registerClient ? `/auth/${flowClients.registerClient.name}/${req.params.lang}?flow=${flowFromPage}` : undefined
+          }
+          res.render('flowSignRegister', data)
+          break;
+        }
         case 'signinpage':
           data = {
             ...data,
             signInPageLink: getSignInPageLink(req.params.lang),
-            loginMigrationLoginLink: getLoginMigrationLink(req.params.lang),
-            oidc_clients: oidc_clients.map((item) => { return { name: item.name, description: item.description, sic: item.sic } })
+            oidc_clients: oidc_clients.map((item) => { return { name: item.name, description: item.description, sic: item.sic } }),
+            signInFlow: signInFlow,
+            showInteracOption: signInFlow === 'all',
+            gcSigninClient: flowClients.gcSigninClient,
+            gcKeyClient: flowClients.gcKeyClient,
+            interacClient: flowClients.interacClient
           }
           res.render('signInPage', data)
           break;
@@ -254,7 +344,6 @@ export class ServerExpress {
           data = {
             ...data,
             signInPageLink: getSignInPageLink(req.params.lang),
-            loginMigrationLoginLink: getLoginMigrationLink(req.params.lang),
             oidc_clients: oidc_clients.map((item) => { return { name: item.name, description: item.description } })
           }
           res.render('login', data)

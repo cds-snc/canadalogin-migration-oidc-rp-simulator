@@ -2,11 +2,17 @@
 <html lang="<%= lang %>">
    <%- include('head')-%>
    <body onload="setOptionsValues()" vocab="http://schema.org/" typeof="WebPage" class="page-home">
-      <%- include('header', { loginMigrationLoginLink})-%>
+      <%- include('header', { loginMigrationLoginLink, signInMenuLink })-%>
       <main property="mainContentOfPage" class="container">
+         <%
+            const flowName = signInFlow === 'no-interac' ? 'no-interac' : 'all';
+            const gcSigninClientName = gcSigninClient ? gcSigninClient.name : (oidc_clients[2] && oidc_clients[2].name);
+            const gcKeyClientName = gcKeyClient ? gcKeyClient.name : (oidc_clients[1] && oidc_clients[1].name);
+            const interacClientName = interacClient ? interacClient.name : gcKeyClientName;
+         %>
          <div class="row profile">
             <div class="col-md-12">
-               <h1 property="name" id="wb-cont">Sign in to the FCAC Secure Portal</h1>
+               <h1 property="name" id="wb-cont">Choose a sign-in method</h1>
             </div>
             <div class="col-md-12">
                <fieldset class="mrgn-tp-sm">
@@ -25,6 +31,7 @@
                      <span class="text-muted">Username and password</span>
                      </label>
                   </div>
+                  <% if (showInteracOption) { %>
                   <div class="radio">
                      <label>
                      <input type="radio" name="signin" value="interac" aria-controls="panel-interac" aria-expanded="false">
@@ -32,6 +39,7 @@
                      <span class="text-muted">Canadian banks</span>
                      </label>
                   </div>
+                  <% } %>
                </fieldset>
             </div>
             <div class="col-md-12">
@@ -44,7 +52,7 @@
                         <a 
                             class="btn btn-primary" 
                             id="SignInWithGCSignIn-gcsignin" 
-                            href="/auth/<%= oidc_clients[2].name %>/<%= lang %>" 
+                            href="<%= gcSigninClientName ? '/auth/' + gcSigninClientName + '/' + lang + '?flow=' + flowName : '#' %>" 
                             onclick="submitWithQueryString(this)"
                             >
                             <span class="fas fa-sign-in-alt" aria-hidden="true"></span> 
@@ -56,7 +64,7 @@
                   <section id="panel-gckey" class="signin-panel hidden" aria-hidden="true">
                      <h2 class="h3 mrgn-tp-0">GCKey is being replaced</h2>
                      <p>
-                        Please complete the steps below to keep your existing <strong>FCAC Secure Portal account data.</strong>
+                        Please complete the steps below to keep your existing <strong>service account data.</strong>
                      </p>
                      <ol class="gc-stepper" role="list">
                         <li class="gc-stepper__item is-current" aria-current="step">
@@ -94,7 +102,7 @@
                         <a 
                             class="btn btn-primary" 
                             id="SignInWithGCSignIn-gckey" 
-                            href="/auth/<%= oidc_clients[1].name%>/<%= lang %>" 
+                            href="<%= gcKeyClientName ? '/auth/' + gcKeyClientName + '/' + lang + '?flow=' + flowName : '#' %>" 
                             onclick="submitWithQueryString(this)"
                             >
                             <span class="fas fa-sign-in-alt" aria-hidden="true"></span> 
@@ -111,12 +119,13 @@
                            </a>
                         </p>
                      </section>
-                  </section>
+                     </section>
+                  <% if (showInteracOption) { %>
                   <!-- Section 3: Interac -->
                   <section id="panel-interac" class="signin-panel hidden" aria-hidden="true">
                      <h2 class="h3 mrgn-tp-0">Interac sign-in partners are being replaced</h2>
                      <p>
-                        Please complete the steps below to keep your existing <strong>FCAC Secure Portal account data.</strong>
+                        Please complete the steps below to keep your existing <strong>service account data.</strong>
                      </p>
                      <ol class="gc-stepper" role="list">
                         <li class="gc-stepper__item is-current" aria-current="step">
@@ -155,7 +164,7 @@
                         <a 
                             class="btn btn-primary" 
                             id="SignInWithGCSignIn-interac" 
-                            href="/auth/<%= oidc_clients[1].name%>/<%= lang %>" 
+                            href="<%= interacClientName ? '/auth/' + interacClientName + '/' + lang + '?flow=' + flowName : '#' %>" 
                             onclick="submitWithQueryString(this)"
                             >
                             <span class="fas fa-sign-in-alt" aria-hidden="true"></span> 
@@ -171,6 +180,7 @@
                         </p>
                      </section>
                   </section>
+                  <% } %>
                </div>
             </div>
          </div>
