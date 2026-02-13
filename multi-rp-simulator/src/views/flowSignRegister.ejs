@@ -19,27 +19,27 @@
                     <ul class="list-unstyled cnjnctn-type-or cnjnctn-md mrgn-tp-lg">
                         <li class="cnjnctn-col">
                             <h2 class="mrgn-tp-sm h4">Sign in to the FCAC Secure Portal <span class="wb-inv">: Option 1</span></h2>
-                                                    
-
                             <div class="mrgn-tp-md">
                                 <p><a class="btn btn-primary btn-lg btn-block p-sm-3 mya" href="<%= signInPageLink %>" rel="noreferrer noopener"><span class="h4">Sign in<span class="wb-inv">: Sign in</span></span></a></p>
                             </div>
-
                         </li>
                         <li class="cnjnctn-col">
                             <h2 class="mrgn-tp-sm h4">Register for FCAC Secure Portal <span class="wb-inv">: Option 2</span></h2>
                             <div class="mrgn-tp-md">
                                 <p>
-                                    <!--<a class="btn btn-default btn-lg btn-block p-sm-3 mya" href="http://localhost:8080/rpsim/signinpage/en" rel="noreferrer noopener"><span class="h4"></span>Register</span></a>-->
-                                    <a 
-                                        class="btn btn-default btn-lg btn-block p-sm-3 mya" 
-                                        id="RegisterInApp" 
-                                        href="/auth/<%= oidc_clients[2].name %>/<%= lang %>" 
-                                        onclick="submitWithQueryString(this)"
-                                        >
-                                        <span class="h4">Register</span></a>
-
-
+                                    <% if (registerLink) { %>
+                                      <a
+                                          class="btn btn-default btn-lg btn-block p-sm-3 mya"
+                                          id="RegisterInApp"
+                                          href="<%= registerLink %>"
+                                          onclick="submitWithQueryString(this)"
+                                          >
+                                          <span class="h4">Register</span></a>
+                                    <% } else { %>
+                                      <button class="btn btn-default btn-lg btn-block p-sm-3 mya" disabled>
+                                        <span class="h4">Register</span>
+                                      </button>
+                                    <% } %>
                                 </p>
                             </div>
                         </li>
@@ -50,6 +50,6 @@
         </div>
 
     <%- include('preFooter')-%>
-	</main>	
+	</main>
 	<%- include('footer')-%>
 </body></html>

@@ -4,27 +4,59 @@
 <%- include('head')-%>
 
 <body onload="setOptionsValues()" vocab="http://schema.org/" typeof="WebPage" class="page-home">
-	<%- include('header', { loginMigrationLoginLink })-%>
-	<main property="mainContentOfPage" class="container">
-		<div class="row profile">
-			<div class="col-md-12">
-				<h1 property="name" id="wb-cont">FCAC Secure Portal</h1>
-			</div>
-		</div>
+  <%- include('header', { loginMigrationLoginLink, signInMenuLink })-%>
+  <main property="mainContentOfPage" class="container">
+    <div class="row profile">
+      <div class="col-md-12">
+        <h1 property="name" id="wb-cont">Sign-in migration test hub</h1>
+      </div>
+    </div>
 
-        <p>The Financial Consumer Agency of Canada (FCAC) ensures federally regulated financial entities comply with consumer protection measures, promotes financial education and raises consumers’ awareness of their rights and responsibilities.</p>
-        <div class="row">
-            <div class="col-md-12 text-center">
-                <img
-                    src="/images/FCACHomePageImage.jpg"
-                    alt="Financial Consumer Agency of Canada overview image"
-                    class="img-responsive img-fluid"
-                    style="margin-top: 1.5rem;"
-                />
-            </div>
+    <p>Use this page to launch repeatable sign-in and registration test flows.</p>
+
+    <div class="row mrgn-tp-lg">
+      <div class="col-md-6">
+        <div class="well well-sm brdr-rds-0">
+          <h2 class="h4 mrgn-tp-0">Flow A: GC Sign in + GCKey + Interac</h2>
+          <p>This flow opens a dedicated Sign in/Register page and includes all three sign-in options in the next step.</p>
+          <p class="mrgn-tp-md">
+            <a class="btn btn-primary btn-lg btn-block p-sm-3 mya" href="<%= flowAllPageLink %>">
+              <span class="h4">Open flow page</span>
+            </a>
+          </p>
         </div>
+      </div>
+      <div class="col-md-6">
+        <div class="well well-sm brdr-rds-0">
+          <h2 class="h4 mrgn-tp-0">Flow B: GC Sign in + GCKey</h2>
+          <p>This flow opens a dedicated Sign in/Register page and keeps only GC Sign in and GCKey.</p>
+          <p class="mrgn-tp-md">
+            <a class="btn btn-primary btn-lg btn-block p-sm-3 mya" href="<%= flowNoInteracPageLink %>">
+              <span class="h4">Open flow page</span>
+            </a>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="panel panel-info">
+          <div class="panel-body">
+            <h2 class="h4 mrgn-tp-0">Manual client selection</h2>
+            <p>Need the original RP simulator client chooser? Open it directly:</p>
+            <p class="mrgn-bttm-0">
+              <a class="btn btn-default" href="<%= manualClientSelectionLink %>">
+                Open RP simulator client picker
+              </a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <%- include('preFooter')-%>
-	</main>	
-	<%- include('footer')-%>
-</body></html>
+  </main>
+  <%- include('footer')-%>
+</body>
+</html>
