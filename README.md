@@ -2,3 +2,5 @@
 Source code and configuration for the GC Sign in Migration app OIDC Relying Party Simulators
 
 Only use the multi-rp-simulator
+
+Add the two different test flows
