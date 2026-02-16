@@ -16,3 +16,11 @@ Local (Docker):
 `npm test` to run e2e tests.
 
 See the complementary project at https://github.com/sign-in-canada/oidc-provider
+
+Back-channel logout:
+- Register a provider-specific back-channel logout URI with your OP, for example:
+  - `http://localhost:8080/backchannel-logout/client1`
+- The RP accepts `POST` requests to:
+  - `/backchannel-logout/:provider`
+  - `/backchannel_logout/:provider` (alias)
+- Send `logout_token` in the request body (`application/x-www-form-urlencoded` or JSON).
