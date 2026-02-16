@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/compare/v1.1.1...v1.1.2) (2026-02-16)
+
+
+### Bug Fixes
+
+* **deps:** added support for multi flows for testing and backchannel logout ([#23](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/issues/23)) ([ba58f43](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/commit/ba58f43665ade0006434801f412cfd4be0de5902))
+
 ## [1.1.1](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/compare/v1.1.0...v1.1.1) (2026-02-09)
 
 
