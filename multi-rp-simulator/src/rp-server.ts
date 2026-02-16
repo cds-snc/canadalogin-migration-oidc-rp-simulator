@@ -181,6 +181,177 @@ interface RequestWithUserSession extends express.Request {
   session?: any
 }
 
+type BackChannelLogoutClaims = {
+  iss: string
+  sid?: string
+  sub?: string
+  events: Record<string, unknown>
+  nonce?: string
+}
+
+const BACKCHANNEL_LOGOUT_EVENT = 'http://schemas.openid.net/event/backchannel-logout';
+const logoutIndexByKey = new Map<string, Set<string>>();
+const logoutKeysBySessionId = new Map<string, string[]>();
+
+function buildBackChannelLogoutKeys(provider: string, issuer: string, sid?: string, sub?: string): string[] {
+  const normalizedProvider = provider && provider.trim();
+  const normalizedIssuer = issuer && issuer.trim();
+  const keys: string[] = [];
+
+  if (!normalizedProvider || !normalizedIssuer) {
+    return keys;
+  }
+
+  if (sid) {
+    keys.push(`${normalizedProvider}|${normalizedIssuer}|sid|${sid}`);
+  }
+
+  if (sub) {
+    keys.push(`${normalizedProvider}|${normalizedIssuer}|sub|${sub}`);
+  }
+
+  return keys;
+}
+
+function clearSessionFromBackChannelIndex(sessionId?: string) {
+  if (!sessionId) {
+    return;
+  }
+
+  const keys = logoutKeysBySessionId.get(sessionId) || [];
+
+  for (const key of keys) {
+    const sessions = logoutIndexByKey.get(key);
+    if (!sessions) {
+      continue;
+    }
+
+    sessions.delete(sessionId);
+    if (sessions.size === 0) {
+      logoutIndexByKey.delete(key);
+    }
+  }
+
+  logoutKeysBySessionId.delete(sessionId);
+}
+
+function indexSessionForBackChannelLogout(sessionId: string, provider: string, issuer: string, sid?: string, sub?: string) {
+  clearSessionFromBackChannelIndex(sessionId);
+
+  const keys = buildBackChannelLogoutKeys(provider, issuer, sid, sub);
+  if (!keys.length) {
+    return;
+  }
+
+  for (const key of keys) {
+    const sessions = logoutIndexByKey.get(key) || new Set<string>();
+    sessions.add(sessionId);
+    logoutIndexByKey.set(key, sessions);
+  }
+
+  logoutKeysBySessionId.set(sessionId, keys);
+}
+
+function findSessionsForBackChannelLogout(provider: string, issuer: string, sid?: string, sub?: string): string[] {
+  const matches = new Set<string>();
+
+  for (const key of buildBackChannelLogoutKeys(provider, issuer, sid, sub)) {
+    const sessionIds = logoutIndexByKey.get(key);
+    if (!sessionIds) {
+      continue;
+    }
+
+    sessionIds.forEach((sessionId) => {
+      matches.add(sessionId);
+    });
+  }
+
+  return Array.from(matches);
+}
+
+function resolveExpectedSigningAlg(client: any): string | undefined {
+  if (client && typeof client.id_token_signed_response_alg === 'string') {
+    return client.id_token_signed_response_alg;
+  }
+
+  const supportedAlgorithms = client && client.issuer && client.issuer.id_token_signing_alg_values_supported;
+  if (Array.isArray(supportedAlgorithms) && typeof supportedAlgorithms[0] === 'string') {
+    return supportedAlgorithms[0];
+  }
+
+  return undefined;
+}
+
+function getSessionTokenClaims(req: RequestWithUserSession) {
+  const tokenSet = req.session && req.session.tokenSet;
+  if (!tokenSet || typeof tokenSet.claims !== 'function') {
+    return req.user;
+  }
+
+  try {
+    return tokenSet.claims();
+  } catch (error) {
+    console.warn('[backchannel-logout] could not read token claims from session', error);
+    return req.user;
+  }
+}
+
+async function validateBackChannelLogoutToken(client: any, logoutToken: string): Promise<BackChannelLogoutClaims> {
+  const expectedAlg = resolveExpectedSigningAlg(client);
+  if (!expectedAlg) {
+    throw new Error('Could not determine expected signing algorithm');
+  }
+
+  const validated = await client.validateJWT(
+    logoutToken,
+    expectedAlg,
+    ['iss', 'aud', 'iat', 'jti', 'events']
+  );
+  const payload = validated && validated.payload ? validated.payload : {};
+
+  if (payload.nonce !== undefined) {
+    throw new Error('logout_token must not contain nonce');
+  }
+
+  if (!payload.events || typeof payload.events !== 'object' || Array.isArray(payload.events)) {
+    throw new Error('logout_token is missing events claim');
+  }
+
+  if (!(BACKCHANNEL_LOGOUT_EVENT in payload.events)) {
+    throw new Error('logout_token is missing backchannel logout event');
+  }
+
+  if (typeof payload.iss !== 'string' || payload.iss.length === 0) {
+    throw new Error('logout_token has invalid iss claim');
+  }
+
+  const sid = typeof payload.sid === 'string' ? payload.sid : undefined;
+  const sub = typeof payload.sub === 'string' ? payload.sub : undefined;
+  if (!sid && !sub) {
+    throw new Error('logout_token must include sid or sub');
+  }
+
+  return {
+    iss: payload.iss,
+    sid,
+    sub,
+    events: payload.events,
+    nonce: payload.nonce
+  };
+}
+
+async function destroySessionById(sessionStore: any, sessionId: string): Promise<void> {
+  await new Promise<void>((resolve, reject) => {
+    sessionStore.destroy(sessionId, (err: any) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+      resolve();
+    });
+  });
+}
+
 passport.serializeUser((user, done) => done(null, user));
 passport.deserializeUser((user, done) => done(null, user));
 
@@ -428,7 +599,23 @@ export class ServerExpress {
 
       console.log(" ========= /success/:provider")
       console.log(provider)
-      
+
+      const sessionId = (req as any).sessionID as string | undefined;
+      const tokenClaims = getSessionTokenClaims(req);
+
+      if (
+        sessionId &&
+        tokenClaims &&
+        typeof tokenClaims.iss === 'string' &&
+        tokenClaims.iss.length > 0
+      ) {
+        const sid = typeof tokenClaims.sid === 'string' ? tokenClaims.sid : undefined;
+        const sub = typeof tokenClaims.sub === 'string' ? tokenClaims.sub : undefined;
+        indexSessionForBackChannelLogout(sessionId, provider, tokenClaims.iss, sid, sub);
+      } else {
+        clearSessionFromBackChannelIndex(sessionId);
+      }
+
       
       const rawLocale = getLocale(req);
 
@@ -510,6 +697,7 @@ export class ServerExpress {
 
     app.get('/logout/callback', (req: RequestWithUserSession, res) => {
       const locale = getLocale(req);
+      clearSessionFromBackChannelIndex((req as any).sessionID);
 
       (req as any).logout();
       req.session.destroy((err) => {
@@ -517,6 +705,60 @@ export class ServerExpress {
         res.redirect(`/rpsim/login/${locale}`);
       });
     });
+
+    const backChannelLogoutRequestParsers = [
+      express.urlencoded({ extended: false }),
+      express.json()
+    ];
+
+    const handleBackChannelLogout = async (req: RequestWithUserSession, res: express.Response) => {
+      const provider = req.params.provider;
+      const logoutToken = req.body && typeof req.body.logout_token === 'string'
+        ? req.body.logout_token
+        : undefined;
+
+      if (!logoutToken) {
+        return res.status(400).send('Missing logout_token');
+      }
+
+      if (!(await ensureStrategy(provider))) {
+        return res.status(400).send(`Unknown provider: ${provider}`);
+      }
+
+      const strategy = passport._strategy(provider);
+      const client = strategy && strategy._client;
+
+      if (!client) {
+        return res.status(500).send('OIDC client not initialized');
+      }
+
+      try {
+        const claims = await validateBackChannelLogoutToken(client, logoutToken);
+        const matchingSessionIds = findSessionsForBackChannelLogout(provider, claims.iss, claims.sid, claims.sub);
+        const sessionStore = (req as any).sessionStore;
+
+        if (!sessionStore || typeof sessionStore.destroy !== 'function') {
+          return res.status(500).send('Session store does not support session destruction');
+        }
+
+        let destroyedSessions = 0;
+
+        for (const sessionId of matchingSessionIds) {
+          await destroySessionById(sessionStore, sessionId);
+          clearSessionFromBackChannelIndex(sessionId);
+          destroyedSessions += 1;
+        }
+
+        console.log(`[backchannel-logout] provider=${provider} sid=${claims.sid || 'n/a'} sub=${claims.sub || 'n/a'} destroyed_sessions=${destroyedSessions}`);
+        return res.status(200).send('OK');
+      } catch (error) {
+        console.warn(`[backchannel-logout] request rejected for provider=${provider}`, error);
+        return res.status(400).send('Invalid logout_token');
+      }
+    };
+
+    app.post('/backchannel-logout/:provider', ...backChannelLogoutRequestParsers, handleBackChannelLogout);
+    app.post('/backchannel_logout/:provider', ...backChannelLogoutRequestParsers, handleBackChannelLogout);
 
     // invalid routes
 
