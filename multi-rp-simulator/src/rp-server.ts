@@ -296,6 +296,55 @@ function getSessionTokenClaims(req: RequestWithUserSession) {
   }
 }
 
+function summarizeSessionForLogout(req: RequestWithUserSession) {
+  const sessionId = ((req as any).sessionID as string | undefined) || '';
+  const maskedSessionId = sessionId ? `...${sessionId.slice(-8)}` : 'none';
+  const provider = req.session && req.session.provider ? req.session.provider : 'none';
+  const hasTokenSet = !!(req.session && req.session.tokenSet);
+  const hasIdToken = !!(req.session && req.session.tokenSet && typeof req.session.tokenSet.id_token === 'string' && req.session.tokenSet.id_token.length > 0);
+  const hasUserinfo = !!(req.session && req.session.userinfo);
+  const locale = req.session && req.session.userinfo && req.session.userinfo.locale
+    ? String(req.session.userinfo.locale).substring(0, 2)
+    : 'none';
+
+  return `session_id=${maskedSessionId} provider=${provider} has_token_set=${hasTokenSet} has_id_token=${hasIdToken} has_userinfo=${hasUserinfo} locale=${locale}`;
+}
+
+function resolveLogoutHint(req: RequestWithUserSession): { hint?: string; source: string } {
+  const tokenClaims = getSessionTokenClaims(req) || {};
+
+  if (tokenClaims && typeof tokenClaims.sid === 'string' && tokenClaims.sid.length > 0) {
+    return { hint: tokenClaims.sid, source: 'token.sid' };
+  }
+
+  if (tokenClaims && typeof tokenClaims.sub === 'string' && tokenClaims.sub.length > 0) {
+    return { hint: tokenClaims.sub, source: 'token.sub' };
+  }
+
+  if (tokenClaims && typeof tokenClaims.preferred_username === 'string' && tokenClaims.preferred_username.length > 0) {
+    return { hint: tokenClaims.preferred_username, source: 'token.preferred_username' };
+  }
+
+  if (tokenClaims && typeof tokenClaims.email === 'string' && tokenClaims.email.length > 0) {
+    return { hint: tokenClaims.email, source: 'token.email' };
+  }
+
+  const userinfo = req.session && req.session.userinfo;
+  if (userinfo && typeof userinfo.sub === 'string' && userinfo.sub.length > 0) {
+    return { hint: userinfo.sub, source: 'userinfo.sub' };
+  }
+
+  if (userinfo && typeof userinfo.preferred_username === 'string' && userinfo.preferred_username.length > 0) {
+    return { hint: userinfo.preferred_username, source: 'userinfo.preferred_username' };
+  }
+
+  if (userinfo && typeof userinfo.email === 'string' && userinfo.email.length > 0) {
+    return { hint: userinfo.email, source: 'userinfo.email' };
+  }
+
+  return { source: 'none' };
+}
+
 async function validateBackChannelLogoutToken(client: any, logoutToken: string): Promise<BackChannelLogoutClaims> {
   const expectedAlg = resolveExpectedSigningAlg(client);
   if (!expectedAlg) {
@@ -619,7 +668,7 @@ export class ServerExpress {
       
       const rawLocale = getLocale(req);
 
-      const currentLocale = rawLocale && rawLocale !== "undefined" ? rawLocale : "en";
+      const currentLocale = rawLocale === 'fr' ? 'fr' : 'en';
 
       const baseUrl = computeBaseUrl(req, resolvedPort);
       this.publicBaseUrl = baseUrl;
@@ -649,6 +698,7 @@ export class ServerExpress {
     });
 
     app.get('/signout', (req: RequestWithUserSession, res) => {
+      console.log(`[signout] received ${summarizeSessionForLogout(req)}`);
       res.set('content-type', 'text/html;charset=UTF-8')
       return res.status(200).send(`
         <html xmlns="http://www.w3.org/1999/xhtml">
@@ -666,43 +716,101 @@ export class ServerExpress {
     });
 
     app.get('/logout/:locale/:hint', (req: RequestWithUserSession, res) => {
-      const provider = req.session.provider
-      let params = {}
+      const provider = req.session && req.session.provider;
+      const locale = req.params.locale === 'fr' ? 'fr' : 'en';
+      const hint = req.params.hint;
+      const sendIdTokenHint = hint === 'true';
 
-      if (!provider) res.status(400).send('No Session')
-      else {
-        const strategy = passport._strategy(provider)
-        const client = strategy._client
-        const locale = req.params.locale
-        const hint = req.params.hint
-        params = {
-          client_id: client.client_id
+      console.log(
+        `[logout] request locale_param=${req.params.locale} normalized_locale=${locale} hint_param=${hint} send_id_token_hint=${sendIdTokenHint} ${summarizeSessionForLogout(req)}`
+      );
+
+      if (req.session) {
+        if (!req.session.userinfo) req.session.userinfo = {};
+        req.session.userinfo.locale = locale;
+      }
+
+      if (!provider) {
+        console.warn('[logout] missing provider in session, redirecting to local logout callback');
+        return res.redirect('/logout/callback');
+      }
+
+      const strategy = passport._strategy(provider);
+      const client = strategy && strategy._client;
+
+      if (!client || typeof client.endSessionUrl !== 'function') {
+        console.warn(`[logout] strategy/client not initialized for provider=${provider}, redirecting to local logout callback`);
+        return res.redirect('/logout/callback');
+      }
+
+      const params: Record<string, string> = {
+        client_id: client.client_id
+      };
+
+      const postLogoutRedirectUris = (client.post_logout_redirect_uris || (client.metadata && client.metadata.post_logout_redirect_uris));
+      const postLogoutRedirectUri = Array.isArray(postLogoutRedirectUris) && typeof postLogoutRedirectUris[0] === 'string'
+        ? postLogoutRedirectUris[0]
+        : undefined;
+      if (postLogoutRedirectUri) {
+        params.post_logout_redirect_uri = postLogoutRedirectUri;
+      }
+
+      const logoutHint = resolveLogoutHint(req);
+      if (logoutHint.hint) {
+        params.logout_hint = logoutHint.hint;
+        console.log(`[logout] logout_hint attached source=${logoutHint.source}`);
+      } else {
+        console.warn('[logout] logout_hint unavailable in session/token claims');
+      }
+
+      if (sendIdTokenHint) {
+        const idTokenHint = req.session && req.session.tokenSet && req.session.tokenSet.id_token;
+        if (typeof idTokenHint === 'string' && idTokenHint.length > 0) {
+          params.id_token_hint = idTokenHint;
+          console.log(`[logout] id_token_hint attached for provider=${provider}`);
+        } else {
+          console.warn(`[logout] id_token_hint requested but missing tokenSet.id_token for provider=${provider}; continuing without id_token_hint`);
         }
+      }
 
-        if (hint && hint == 'true') {
-          params = {
-            ...params,
-            id_token_hint: req.session.tokenSet.id_token
-          }
-        }
-
-        if (locale && req.session) {
-          if (!req.session.userinfo) req.session.userinfo = {}
-          req.session.userinfo.locale = locale
-        }
-
-        res.redirect(client.endSessionUrl(params));
+      try {
+        console.log(`[logout] redirecting to end session endpoint provider=${provider} includes_id_token_hint=${!!params.id_token_hint} includes_logout_hint=${!!params.logout_hint} includes_post_logout_redirect_uri=${!!params.post_logout_redirect_uri}`);
+        return res.redirect(client.endSessionUrl(params));
+      } catch (error) {
+        console.warn(`[logout] failed to create end session URL for provider=${provider}; redirecting to local logout callback`, error);
+        return res.redirect('/logout/callback');
       }
     });
 
     app.get('/logout/callback', (req: RequestWithUserSession, res) => {
       const locale = getLocale(req);
+      console.log(`[logout/callback] entered locale=${locale} ${summarizeSessionForLogout(req)}`);
       clearSessionFromBackChannelIndex((req as any).sessionID);
 
-      (req as any).logout();
-      req.session.destroy((err) => {
-        if (err) res.status(500).render('error', { err: err });
-        res.redirect(`/rpsim/login/${locale}`);
+      const finishSessionCleanup = () => {
+        if (!req.session || typeof req.session.destroy !== 'function') {
+          console.warn('[logout/callback] no active session object, redirecting to login');
+          return res.redirect(`/rpsim/login/${locale}`);
+        }
+
+        return req.session.destroy((err) => {
+          if (err) {
+            console.error('[logout/callback] session destroy failed', err);
+            return res.status(500).render('error', { err: err });
+          }
+
+          console.log('[logout/callback] session destroyed, redirecting to login');
+          return res.redirect(`/rpsim/login/${locale}`);
+        });
+      };
+
+      return (req as any).logout((logoutErr: any) => {
+        if (logoutErr) {
+          console.error('[logout/callback] passport logout failed', logoutErr);
+          return res.status(500).render('error', { err: logoutErr });
+        }
+
+        return finishSessionCleanup();
       });
     });
 
@@ -716,6 +824,7 @@ export class ServerExpress {
       const logoutToken = req.body && typeof req.body.logout_token === 'string'
         ? req.body.logout_token
         : undefined;
+      console.log(`[backchannel-logout] request received provider=${provider} content_type=${req.headers['content-type'] || 'unknown'} has_logout_token=${!!logoutToken}`);
 
       if (!logoutToken) {
         return res.status(400).send('Missing logout_token');
@@ -736,6 +845,7 @@ export class ServerExpress {
         const claims = await validateBackChannelLogoutToken(client, logoutToken);
         const matchingSessionIds = findSessionsForBackChannelLogout(provider, claims.iss, claims.sid, claims.sub);
         const sessionStore = (req as any).sessionStore;
+        console.log(`[backchannel-logout] validated token provider=${provider} sid=${claims.sid || 'n/a'} sub=${claims.sub || 'n/a'} matched_sessions=${matchingSessionIds.length}`);
 
         if (!sessionStore || typeof sessionStore.destroy !== 'function') {
           return res.status(500).send('Session store does not support session destruction');
@@ -885,9 +995,9 @@ function buildWellKnownUrl(issuerUrl: string) {
 function getLocale(req: RequestWithUserSession) {
   const userinfo = req.session && req.session.userinfo
   const reqParams = req.session && req.session.reqParams
-  const locale = (userinfo && userinfo.locale ? userinfo.locale.substring(0, 2) : (reqParams && reqParams.ui_locales ? reqParams.ui_locales.substring(0, 2) : 'undefined'))
+  const locale = (userinfo && userinfo.locale ? userinfo.locale.substring(0, 2) : (reqParams && reqParams.ui_locales ? reqParams.ui_locales.substring(0, 2) : 'en'))
 
-  return locale
+  return locale === 'fr' ? 'fr' : 'en'
 }
 
 new ServerExpress().start();
