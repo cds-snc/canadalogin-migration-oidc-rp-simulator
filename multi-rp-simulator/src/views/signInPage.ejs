@@ -63,42 +63,42 @@
                   </section>
                   <!-- Section 2: GCKey -->
                   <section id="panel-gckey" class="signin-panel hidden" aria-hidden="true">
-                     <h2 class="h3 mrgn-tp-0">GCKey is being replaced</h2>
+                     <h2 class="h3 mrgn-tp-0"><%= gckey_replaced_heading %></h2>
                      <p>
-                        Please complete the steps below to keep your existing <strong>service account data.</strong>
+                        <%= migration_intro_prefix %> <strong><%= migration_intro_emphasis %></strong>
                      </p>
                      <ol class="gc-stepper" role="list">
                         <li class="gc-stepper__item is-current" aria-current="step">
                            <div class="gc-stepper__dot">
-                              <span class="wb-inv">Current step: Step 1</span>
+                              <span class="wb-inv"><%= stepper_current_step_1 %></span>
                            </div>
-                           <div class="gc-stepper__title">Step 1</div>
-                           <div class="gc-stepper__desc">Create a GC Sign in or sign in</div>
+                           <div class="gc-stepper__title"><%= stepper_step_1 %></div>
+                           <div class="gc-stepper__desc"><%= stepper_desc_1 %></div>
                         </li>
                         <li class="gc-stepper__item">
                            <div class="gc-stepper__dot">
-                              <span class="wb-inv">Step 2</span>
+                              <span class="wb-inv"><%= stepper_step_2 %></span>
                            </div>
-                           <div class="gc-stepper__title">Step 2</div>
-                           <div class="gc-stepper__desc">Link your old sign-in method</div>
+                           <div class="gc-stepper__title"><%= stepper_step_2 %></div>
+                           <div class="gc-stepper__desc"><%= stepper_desc_2 %></div>
                         </li>
                         <li class="gc-stepper__item">
                            <div class="gc-stepper__dot">
-                              <span class="wb-inv">Step 3</span>
+                              <span class="wb-inv"><%= stepper_step_3 %></span>
                            </div>
-                           <div class="gc-stepper__title">Step 3</div>
-                           <div class="gc-stepper__desc">Access your existing account</div>
+                           <div class="gc-stepper__title"><%= stepper_step_3 %></div>
+                           <div class="gc-stepper__desc"><%= stepper_desc_3 %></div>
                         </li>
                      </ol>
                      
-                     <h3 class="h4">Step 1: Create a GC Sign in if you don’t have one</h3>
-                     <p>If you’ve already used GC Sign in on another service, you can enter your email and password.</p>
+                     <h3 class="h4"><%= migration_step1_heading %></h3>
+                     <p><%= migration_step1_desc %></p>
                      
-                     <h3 class="h4">Step 2: Link your GCKey</h3>
-                     <p>Use the GCKey you used the last time you signed in to this service.</p>
+                     <h3 class="h4"><%= migration_step2_gckey_heading %></h3>
+                     <p><%= migration_step2_gckey_desc %></p>
                      
-                     <h3 class="h4">Step 3: Access your existing account</h3>
-                     <p>After linking, you’ll continue to your existing account.</p>
+                     <h3 class="h4"><%= migration_step3_heading %></h3>
+                     <p><%= migration_step3_desc %></p>
                      <p class="mrgn-tp-md">
                         <a 
                             class="btn btn-primary" 
@@ -107,16 +107,16 @@
                             onclick="submitWithQueryString(this)"
                             >
                             <span class="fas fa-sign-in-alt" aria-hidden="true"></span> 
-                            Start Step 1
+                            <%= migration_start_step1_button %>
                         </a> 
                      </p>
 
                      <!-- "For more information" block -->
                      <section class="alert alert-info mrgn-tp-lg" role="note">
-                        <h3 class="h5 mrgn-tp-0">For more information</h3>
+                        <h3 class="h5 mrgn-tp-0"><%= migration_more_info_heading %></h3>
                         <p class="mrgn-bttm-0">
                            <a href="#" target="_blank" rel="noopener noreferrer">
-                           How to update your sign-in method<span class="wb-inv"> (opens in a new tab)</span>
+                           <%= migration_update_signin_link_text %><span class="wb-inv"> <%= opens_new_tab_sr %></span>
                            </a>
                         </p>
                      </section>
@@ -124,42 +124,42 @@
                   <% if (showInteracOption) { %>
                   <!-- Section 3: Interac -->
                   <section id="panel-interac" class="signin-panel hidden" aria-hidden="true">
-                     <h2 class="h3 mrgn-tp-0">Interac sign-in partners are being replaced</h2>
+                     <h2 class="h3 mrgn-tp-0"><%= interac_replaced_heading %></h2>
                      <p>
-                        Please complete the steps below to keep your existing <strong>service account data.</strong>
+                        <%= migration_intro_prefix %> <strong><%= migration_intro_emphasis %></strong>
                      </p>
                      <ol class="gc-stepper" role="list">
                         <li class="gc-stepper__item is-current" aria-current="step">
                            <div class="gc-stepper__dot">
-                              <span class="wb-inv">Current step: Step 1</span>
+                              <span class="wb-inv"><%= stepper_current_step_1 %></span>
                            </div>
-                           <div class="gc-stepper__title">Step 1</div>
-                           <div class="gc-stepper__desc">Create a GC Sign in or sign in</div>
+                           <div class="gc-stepper__title"><%= stepper_step_1 %></div>
+                           <div class="gc-stepper__desc"><%= stepper_desc_1 %></div>
                         </li>
                         <li class="gc-stepper__item">
                            <div class="gc-stepper__dot">
-                              <span class="wb-inv">Step 2</span>
+                              <span class="wb-inv"><%= stepper_step_2 %></span>
                            </div>
-                           <div class="gc-stepper__title">Step 2</div>
-                           <div class="gc-stepper__desc">Link your old sign-in method</div>
+                           <div class="gc-stepper__title"><%= stepper_step_2 %></div>
+                           <div class="gc-stepper__desc"><%= stepper_desc_2 %></div>
                         </li>
                         <li class="gc-stepper__item">
                            <div class="gc-stepper__dot">
-                              <span class="wb-inv">Step 3</span>
+                              <span class="wb-inv"><%= stepper_step_3 %></span>
                            </div>
-                           <div class="gc-stepper__title">Step 3</div>
-                           <div class="gc-stepper__desc">Access your existing account</div>
+                           <div class="gc-stepper__title"><%= stepper_step_3 %></div>
+                           <div class="gc-stepper__desc"><%= stepper_desc_3 %></div>
                         </li>
                      </ol>
                      
-                     <h3 class="h4">Step 1: Create a GC Sign in if you don’t have one</h3>
-                     <p>If you’ve already used GC Sign in on another service, you can enter your email and password.</p>
+                     <h3 class="h4"><%= migration_step1_heading %></h3>
+                     <p><%= migration_step1_desc %></p>
                      
-                     <h3 class="h4">Step 2: Link your Interac sign-in partner</h3>
-                     <p>Use the bank sign-in you used the last time you signed in to this service.</p>
+                     <h3 class="h4"><%= migration_step2_interac_heading %></h3>
+                     <p><%= migration_step2_interac_desc %></p>
                      
-                     <h3 class="h4">Step 3: Access your existing account</h3>
-                     <p>After linking, you’ll continue to your existing account.</p>
+                     <h3 class="h4"><%= migration_step3_heading %></h3>
+                     <p><%= migration_step3_desc %></p>
                      
                      <p class="mrgn-tp-md">
                         <a 
@@ -169,14 +169,14 @@
                             onclick="submitWithQueryString(this)"
                             >
                             <span class="fas fa-sign-in-alt" aria-hidden="true"></span> 
-                            Start Step 1
+                            <%= migration_start_step1_button %>
                         </a> 
                      </p>
                      <section class="alert alert-info mrgn-tp-lg" role="note">
-                        <h3 class="h5 mrgn-tp-0">For more information</h3>
+                        <h3 class="h5 mrgn-tp-0"><%= migration_more_info_heading %></h3>
                         <p class="mrgn-bttm-0">
                            <a href="#" target="_blank" rel="noopener noreferrer">
-                           How to update your sign-in method<span class="wb-inv"> (opens in a new tab)</span>
+                           <%= migration_update_signin_link_text %><span class="wb-inv"> <%= opens_new_tab_sr %></span>
                            </a>
                         </p>
                      </section>
