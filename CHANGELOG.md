@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.3](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/compare/v1.1.2...v1.1.3) (2026-02-18)
+
+
+### Bug Fixes
+
+* **deps:** properly support logout ([#26](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/issues/26)) ([83ce8c5](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/commit/83ce8c59eedc7d4e47d387b09ed90b2903bb39e9))
+
 ## [1.1.2](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/compare/v1.1.1...v1.1.2) (2026-02-16)
 
 
