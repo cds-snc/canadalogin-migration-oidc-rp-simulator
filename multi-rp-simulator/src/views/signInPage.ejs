@@ -12,31 +12,32 @@
          %>
          <div class="row profile">
             <div class="col-md-12">
-               <h1 property="name" id="wb-cont">Choose a sign-in method</h1>
+               <h1 property="name" id="wb-cont"><%= fcac_signin_heading %></h1>
             </div>
             <div class="col-md-12">
                <fieldset class="mrgn-tp-sm">
-                  <legend>How did you sign in last time?</legend>
+                  <legend><%= signin_last_time_legend %></legend>
+                  <p><%= signin_not_sure_hint %></p>
                   <div class="radio">
                      <label>
                      <input type="radio" name="signin" value="gc-signin" aria-controls="panel-gc-signin" aria-expanded="false">
-                     <span class="text-bold">GC Sign in</span><br>
-                     <span class="text-muted">Email and password</span>
+                     <span class="text-bold"><%= canadalogin_label %></span><br>
+                     <span class="text-muted"><%= email_password_label %></span>
                      </label>
                   </div>
                   <div class="radio">
                      <label>
                      <input type="radio" name="signin" value="gckey" aria-controls="panel-gckey" aria-expanded="false">
-                     <span class="text-bold">GCKey</span><br>
-                     <span class="text-muted">Username and password</span>
+                     <span class="text-bold"><%= gckey_label %></span><br>
+                     <span class="text-muted"><%= username_password_label %></span>
                      </label>
                   </div>
                   <% if (showInteracOption) { %>
                   <div class="radio">
                      <label>
                      <input type="radio" name="signin" value="interac" aria-controls="panel-interac" aria-expanded="false">
-                     <span class="text-bold">Interac sign-in partners</span><br>
-                     <span class="text-muted">Canadian banks</span>
+                     <span class="text-bold"><%= interac_partner_label %></span><br>
+                     <span class="text-muted"><%= interac_banks_credit_unions_label %></span>
                      </label>
                   </div>
                   <% } %>
@@ -46,8 +47,8 @@
                <div class="mrgn-tp-lg">
                   <!-- Section 1: GC Sign in -->
                   <section id="panel-gc-signin" class="signin-panel hidden" aria-hidden="true">
-                     <h2 class="h3 mrgn-tp-0">Use your GC Sign in</h2>
-                     <p>You will be redirected to sign in with your GC Sign in.</p>
+                     <h2 class="h3 mrgn-tp-0"><%= use_canadalogin_heading %></h2>
+                     <p><%= redirect_canadalogin_text %></p>
                       <p class="mrgn-tp-md">
                         <a 
                             class="btn btn-primary" 
@@ -56,7 +57,7 @@
                             onclick="submitWithQueryString(this)"
                             >
                             <span class="fas fa-sign-in-alt" aria-hidden="true"></span> 
-                            Sign in with GC Sign in
+                            <%= signin_with_canadalogin_button %>
                         </a> 
                      </p>
                   </section>

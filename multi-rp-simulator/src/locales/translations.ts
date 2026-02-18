@@ -45,7 +45,24 @@ export const locales_en = {
   parameter: 'Parameter',
   value: 'Value',
   expired_session_error: 'Session has expired or could not be found',
-  loginMigration_link: 'http://localhost:8080/rpsim/loginMigration/en'
+  loginMigration_link: 'http://localhost:8080/rpsim/loginMigration/en',
+  fcac_portal_title: 'FCAC Secure Portal',
+  fcac_portal_account_desc: 'Your Financial Consumer Agency of Canada (FCAC) portal account lets regulated entities submit legislative and supervisory reporting requirements.',
+  fcac_signin_heading: 'Sign in to the FCAC Secure Portal',
+  fcac_register_heading: 'Register for the FCAC Secure Portal',
+  signin_button_label: 'Sign in',
+  register_button_label: 'Register',
+  signin_last_time_legend: 'How did you sign in last time?',
+  signin_not_sure_hint: 'If you\'re not sure, you can select CanadaLogin.',
+  canadalogin_label: 'CanadaLogin',
+  email_password_label: 'Email and password',
+  gckey_label: 'GCKey',
+  username_password_label: 'Username and password',
+  interac_partner_label: 'Interac sign-in partner',
+  interac_banks_credit_unions_label: 'Canadian banks and credit unions',
+  use_canadalogin_heading: 'Use your CanadaLogin',
+  redirect_canadalogin_text: 'You will be redirected to sign in with your CanadaLogin.',
+  signin_with_canadalogin_button: 'Sign in with CanadaLogin'
 };
 
 export const locales_fr = {
@@ -95,6 +112,23 @@ export const locales_fr = {
   parameter: 'Paramètre',
   value: 'Valeur',
   expired_session_error: 'La session a expiré ou est introuvable',
-  loginMigration_link: 'http://localhost:8080/rpsim/loginMigration/fr'
+  loginMigration_link: 'http://localhost:8080/rpsim/loginMigration/fr',
+  fcac_portal_title: 'Portail sécurisé de l\'ACFC',
+  fcac_portal_account_desc: 'Votre compte du portail de l\'Agence de la consommation en matière financière du Canada (ACFC) permet aux entités réglementées de soumettre les exigences de déclaration législatives et de surveillance.',
+  fcac_signin_heading: 'Ouvrez une session dans le Portail sécurisé de l\'ACFC',
+  fcac_register_heading: 'Inscrivez-vous au Portail sécurisé de l\'ACFC',
+  signin_button_label: 'Ouvrir une session',
+  register_button_label: 'S\'inscrire',
+  signin_last_time_legend: 'Comment avez-vous ouvert une session la dernière fois?',
+  signin_not_sure_hint: 'Si vous n\'êtes pas certain, vous pouvez sélectionner CanadaLogin.',
+  canadalogin_label: 'CanadaLogin',
+  email_password_label: 'Courriel et mot de passe',
+  gckey_label: 'CléGC',
+  username_password_label: 'Nom d\'utilisateur et mot de passe',
+  interac_partner_label: 'Partenaire de connexion Interac',
+  interac_banks_credit_unions_label: 'Banques et coopératives de crédit canadiennes',
+  use_canadalogin_heading: 'Utilisez votre CanadaLogin',
+  redirect_canadalogin_text: 'Vous serez redirigé pour ouvrir une session avec votre CanadaLogin.',
+  signin_with_canadalogin_button: 'Ouvrir une session avec CanadaLogin'
 
 };
