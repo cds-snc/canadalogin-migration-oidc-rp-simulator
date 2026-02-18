@@ -296,53 +296,39 @@ function getSessionTokenClaims(req: RequestWithUserSession) {
   }
 }
 
-function summarizeSessionForLogout(req: RequestWithUserSession) {
-  const sessionId = ((req as any).sessionID as string | undefined) || '';
-  const maskedSessionId = sessionId ? `...${sessionId.slice(-8)}` : 'none';
-  const provider = req.session && req.session.provider ? req.session.provider : 'none';
-  const hasTokenSet = !!(req.session && req.session.tokenSet);
-  const hasIdToken = !!(req.session && req.session.tokenSet && typeof req.session.tokenSet.id_token === 'string' && req.session.tokenSet.id_token.length > 0);
-  const hasUserinfo = !!(req.session && req.session.userinfo);
-  const locale = req.session && req.session.userinfo && req.session.userinfo.locale
-    ? String(req.session.userinfo.locale).substring(0, 2)
-    : 'none';
-
-  return `session_id=${maskedSessionId} provider=${provider} has_token_set=${hasTokenSet} has_id_token=${hasIdToken} has_userinfo=${hasUserinfo} locale=${locale}`;
-}
-
-function resolveLogoutHint(req: RequestWithUserSession): { hint?: string; source: string } {
+function resolveLogoutHint(req: RequestWithUserSession): string | undefined {
   const tokenClaims = getSessionTokenClaims(req) || {};
 
   if (tokenClaims && typeof tokenClaims.sid === 'string' && tokenClaims.sid.length > 0) {
-    return { hint: tokenClaims.sid, source: 'token.sid' };
+    return tokenClaims.sid;
   }
 
   if (tokenClaims && typeof tokenClaims.sub === 'string' && tokenClaims.sub.length > 0) {
-    return { hint: tokenClaims.sub, source: 'token.sub' };
+    return tokenClaims.sub;
   }
 
   if (tokenClaims && typeof tokenClaims.preferred_username === 'string' && tokenClaims.preferred_username.length > 0) {
-    return { hint: tokenClaims.preferred_username, source: 'token.preferred_username' };
+    return tokenClaims.preferred_username;
   }
 
   if (tokenClaims && typeof tokenClaims.email === 'string' && tokenClaims.email.length > 0) {
-    return { hint: tokenClaims.email, source: 'token.email' };
+    return tokenClaims.email;
   }
 
   const userinfo = req.session && req.session.userinfo;
   if (userinfo && typeof userinfo.sub === 'string' && userinfo.sub.length > 0) {
-    return { hint: userinfo.sub, source: 'userinfo.sub' };
+    return userinfo.sub;
   }
 
   if (userinfo && typeof userinfo.preferred_username === 'string' && userinfo.preferred_username.length > 0) {
-    return { hint: userinfo.preferred_username, source: 'userinfo.preferred_username' };
+    return userinfo.preferred_username;
   }
 
   if (userinfo && typeof userinfo.email === 'string' && userinfo.email.length > 0) {
-    return { hint: userinfo.email, source: 'userinfo.email' };
+    return userinfo.email;
   }
 
-  return { source: 'none' };
+  return undefined;
 }
 
 async function validateBackChannelLogoutToken(client: any, logoutToken: string): Promise<BackChannelLogoutClaims> {
@@ -698,7 +684,6 @@ export class ServerExpress {
     });
 
     app.get('/signout', (req: RequestWithUserSession, res) => {
-      console.log(`[signout] received ${summarizeSessionForLogout(req)}`);
       res.set('content-type', 'text/html;charset=UTF-8')
       return res.status(200).send(`
         <html xmlns="http://www.w3.org/1999/xhtml">
@@ -721,17 +706,12 @@ export class ServerExpress {
       const hint = req.params.hint;
       const sendIdTokenHint = hint === 'true';
 
-      console.log(
-        `[logout] request locale_param=${req.params.locale} normalized_locale=${locale} hint_param=${hint} send_id_token_hint=${sendIdTokenHint} ${summarizeSessionForLogout(req)}`
-      );
-
       if (req.session) {
         if (!req.session.userinfo) req.session.userinfo = {};
         req.session.userinfo.locale = locale;
       }
 
       if (!provider) {
-        console.warn('[logout] missing provider in session, redirecting to local logout callback');
         return res.redirect('/logout/callback');
       }
 
@@ -739,7 +719,6 @@ export class ServerExpress {
       const client = strategy && strategy._client;
 
       if (!client || typeof client.endSessionUrl !== 'function') {
-        console.warn(`[logout] strategy/client not initialized for provider=${provider}, redirecting to local logout callback`);
         return res.redirect('/logout/callback');
       }
 
@@ -756,40 +735,30 @@ export class ServerExpress {
       }
 
       const logoutHint = resolveLogoutHint(req);
-      if (logoutHint.hint) {
-        params.logout_hint = logoutHint.hint;
-        console.log(`[logout] logout_hint attached source=${logoutHint.source}`);
-      } else {
-        console.warn('[logout] logout_hint unavailable in session/token claims');
+      if (logoutHint) {
+        params.logout_hint = logoutHint;
       }
 
       if (sendIdTokenHint) {
         const idTokenHint = req.session && req.session.tokenSet && req.session.tokenSet.id_token;
         if (typeof idTokenHint === 'string' && idTokenHint.length > 0) {
           params.id_token_hint = idTokenHint;
-          console.log(`[logout] id_token_hint attached for provider=${provider}`);
-        } else {
-          console.warn(`[logout] id_token_hint requested but missing tokenSet.id_token for provider=${provider}; continuing without id_token_hint`);
         }
       }
 
       try {
-        console.log(`[logout] redirecting to end session endpoint provider=${provider} includes_id_token_hint=${!!params.id_token_hint} includes_logout_hint=${!!params.logout_hint} includes_post_logout_redirect_uri=${!!params.post_logout_redirect_uri}`);
         return res.redirect(client.endSessionUrl(params));
       } catch (error) {
-        console.warn(`[logout] failed to create end session URL for provider=${provider}; redirecting to local logout callback`, error);
         return res.redirect('/logout/callback');
       }
     });
 
     app.get('/logout/callback', (req: RequestWithUserSession, res) => {
       const locale = getLocale(req);
-      console.log(`[logout/callback] entered locale=${locale} ${summarizeSessionForLogout(req)}`);
       clearSessionFromBackChannelIndex((req as any).sessionID);
 
       const finishSessionCleanup = () => {
         if (!req.session || typeof req.session.destroy !== 'function') {
-          console.warn('[logout/callback] no active session object, redirecting to login');
           return res.redirect(`/rpsim/login/${locale}`);
         }
 
@@ -799,7 +768,6 @@ export class ServerExpress {
             return res.status(500).render('error', { err: err });
           }
 
-          console.log('[logout/callback] session destroyed, redirecting to login');
           return res.redirect(`/rpsim/login/${locale}`);
         });
       };
@@ -824,7 +792,6 @@ export class ServerExpress {
       const logoutToken = req.body && typeof req.body.logout_token === 'string'
         ? req.body.logout_token
         : undefined;
-      console.log(`[backchannel-logout] request received provider=${provider} content_type=${req.headers['content-type'] || 'unknown'} has_logout_token=${!!logoutToken}`);
 
       if (!logoutToken) {
         return res.status(400).send('Missing logout_token');
@@ -845,7 +812,6 @@ export class ServerExpress {
         const claims = await validateBackChannelLogoutToken(client, logoutToken);
         const matchingSessionIds = findSessionsForBackChannelLogout(provider, claims.iss, claims.sid, claims.sub);
         const sessionStore = (req as any).sessionStore;
-        console.log(`[backchannel-logout] validated token provider=${provider} sid=${claims.sid || 'n/a'} sub=${claims.sub || 'n/a'} matched_sessions=${matchingSessionIds.length}`);
 
         if (!sessionStore || typeof sessionStore.destroy !== 'function') {
           return res.status(500).send('Session store does not support session destruction');
@@ -859,10 +825,9 @@ export class ServerExpress {
           destroyedSessions += 1;
         }
 
-        console.log(`[backchannel-logout] provider=${provider} sid=${claims.sid || 'n/a'} sub=${claims.sub || 'n/a'} destroyed_sessions=${destroyedSessions}`);
         return res.status(200).send('OK');
       } catch (error) {
-        console.warn(`[backchannel-logout] request rejected for provider=${provider}`, error);
+        console.warn('[backchannel-logout] request rejected');
         return res.status(400).send('Invalid logout_token');
       }
     };
