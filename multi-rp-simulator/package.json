@@ -6,6 +6,7 @@
   "scripts": {
     "start": "ts-node src/rp-server",
     "build": "tsc",
+    "test:a11y:retest": "A11Y_START_SERVER=true node scripts/a11y-retest.js",
     "start:prod": "node build/src/rp-server.js",
     "nodemon": "nodemon --watch \"src/**\" --ext \"ts,json\"  --exec \"ts-node src/rp-server.ts\"",
     "test": "haibun-cli test",
