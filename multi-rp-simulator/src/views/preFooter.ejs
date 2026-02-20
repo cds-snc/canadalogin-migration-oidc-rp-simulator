@@ -3,59 +3,50 @@
 		<div class="row">
 			<div class="col-sm-6 col-md-5 col-lg-4">
 				<details class="brdr-0">
-					<summary class="btn btn-default text-center">Signaler un problème sur cette page</summary>
+					<summary class="btn btn-default text-center"><%= report_problem_form_aria_label %></summary>
 					<div class="well row">
 						<div class="gc-rprt-prblm">
 							<div class="gc-rprt-prblm-frm gc-rprt-prblm-tggl" id="wb-auto-4">
-								<form action="#">
-									<fieldset>
-										<legend><span class="field-name">Veuillez sélectionner toutes les cases qui s'appliquent : </span></legend>
+								<form action="#" aria-label="<%= report_problem_form_aria_label %>">
+									<fieldset aria-labelledby="problem-report-legend-fr">
+										<legend id="problem-report-legend-fr"><span class="field-name"><%= report_problem_legend %> </span></legend>
 										<div class="checkbox">
-											<label for="gc-rprt-prblm-f1">
-												<input type="checkbox" name="problem1" value="Yes" id="gc-rprt-prblm-f1">
-												Un lien, un bouton ou une vidéo ne fonctionne pas
-											</label>
+											<input type="checkbox" name="problem1" value="Yes" id="gc-rprt-prblm-f1" aria-labelledby="gc-rprt-prblm-f1-lbl">
+											<label id="gc-rprt-prblm-f1-lbl" for="gc-rprt-prblm-f1"><%= report_problem_issue_1 %></label>
 											<input name="problem1" type="hidden" value="No">
 										</div>
 										<div class="checkbox">
-											<label for="gc-rprt-prblm-f2">
-												<input type="checkbox" name="problem2" value="Yes" id="gc-rprt-prblm-f2">
-												Il y a une erreur d'orthographe ou de grammaire
-											</label>
+											<input type="checkbox" name="problem2" value="Yes" id="gc-rprt-prblm-f2" aria-labelledby="gc-rprt-prblm-f2-lbl">
+											<label id="gc-rprt-prblm-f2-lbl" for="gc-rprt-prblm-f2"><%= report_problem_issue_2 %></label>
 											<input name="problem2" type="hidden" value="No">
 										</div>
 										<div class="checkbox">
-											<label for="gc-rprt-prblm-f3">
-												<input type="checkbox" name="problem3" value="Yes" id="gc-rprt-prblm-f3"> Les renseignements sont incomplets
-											</label>
+											<input type="checkbox" name="problem3" value="Yes" id="gc-rprt-prblm-f3" aria-labelledby="gc-rprt-prblm-f3-lbl">
+											<label id="gc-rprt-prblm-f3-lbl" for="gc-rprt-prblm-f3"><%= report_problem_issue_3 %></label>
 											<input name="problem3" type="hidden" value="No">
 										</div>
 										<div class="checkbox">
-											<label for="gc-rprt-prblm-f4">
-												<input type="checkbox" name="problem4" value="Yes" id="gc-rprt-prblm-f4"> L'information n'est plus à jour ou est erronée
-											</label>
+											<input type="checkbox" name="problem4" value="Yes" id="gc-rprt-prblm-f4" aria-labelledby="gc-rprt-prblm-f4-lbl">
+											<label id="gc-rprt-prblm-f4-lbl" for="gc-rprt-prblm-f4"><%= report_problem_issue_4 %></label>
 											<input name="problem4" type="hidden" value="No">
 										</div>
 										<div class="checkbox">
-											<label for="gc-rprt-prblm-f5">
-												<input type="checkbox" name="problem5" value="Yes" id="gc-rprt-prblm-f5">
-												Je n'arrive pas à trouver ce que je cherche
-											</label>
+											<input type="checkbox" name="problem5" value="Yes" id="gc-rprt-prblm-f5" aria-labelledby="gc-rprt-prblm-f5-lbl">
+											<label id="gc-rprt-prblm-f5-lbl" for="gc-rprt-prblm-f5"><%= report_problem_issue_5 %></label>
 											<input name="problem5" type="hidden" value="No">
 										</div>
 										<div class="checkbox">
-											<label for="gc-rprt-prblm-f6">
-												<input type="checkbox" name="problem6" value="Yes" id="gc-rprt-prblm-f6"> Autre problème qui ne figure pas sur cette liste
-											</label>
+											<input type="checkbox" name="problem6" value="Yes" id="gc-rprt-prblm-f6" aria-labelledby="gc-rprt-prblm-f6-lbl">
+											<label id="gc-rprt-prblm-f6-lbl" for="gc-rprt-prblm-f6"><%= report_problem_issue_6 %></label>
 											<input name="problem6" type="hidden" value="No">
 										</div>
 									</fieldset>
-									<button type="submit" class="btn btn-primary wb-toggle wb-init wb-toggle-inited" data-toggle="{&quot;stateOff&quot;: &quot;hide&quot;, &quot;stateOn&quot;: &quot;show&quot;, &quot;selector&quot;: &quot;.gc-rprt-prblm-tggl&quot;}" aria-controls="wb-auto-4 wb-auto-5">Soumettre</button>
+									<button type="submit" class="btn btn-primary wb-toggle wb-init wb-toggle-inited" data-toggle="{&quot;stateOff&quot;: &quot;hide&quot;, &quot;stateOn&quot;: &quot;show&quot;, &quot;selector&quot;: &quot;.gc-rprt-prblm-tggl&quot;}" aria-controls="wb-auto-4 wb-auto-5"><%= submit %></button>
 								</form>
 							</div>
 							<div class="gc-rprt-prblm-thnk gc-rprt-prblm-tggl hide" id="wb-auto-5">
-								<h3>Merci de votre aide!</h3>
-								<p>Vous ne recevrez pas de réponse. Pour toute question,  <a href="https://www.canada.ca/fr/contact.html">contactez-nous</a>.</p>
+								<h3><%= report_problem_thank_you_heading %></h3>
+								<p><%= report_problem_no_reply_text %> <a href="https://www.canada.ca/fr/contact.html"><%= contactUs_label %></a>.</p>
 							</div>
 						</div>
 					</div>
@@ -65,7 +56,7 @@
 			data-wb-share='{"lnkClass": "btn btn-default btn-block"}'></div>
 		</div>
 		<dl id="wb-dtmd">
-			<dt>Date de modification : </dt>
+			<dt><%= date_modified %> : </dt>
 			<dd><time property="dateModified">2022-01-25</time></dd>
 		</dl>
 	</div>
@@ -74,64 +65,51 @@
 		<div class="row">
 			<div class="col-sm-6 col-md-5 col-lg-4">
 				<details class="brdr-0">
-					<summary class="btn btn-default text-center">Report a problem on this page</summary>
+					<summary class="btn btn-default text-center"><%= report_problem_form_aria_label %></summary>
 					<div class="well row">
 						<div class="gc-rprt-prblm">
 							<div class="gc-rprt-prblm-frm gc-rprt-prblm-tggl">
-								<form action="#">
-									<fieldset>
-										<legend><span class="field-name">Please select all that apply: </span></legend>
+								<form action="#" aria-label="<%= report_problem_form_aria_label %>">
+									<fieldset aria-labelledby="problem-report-legend-en">
+										<legend id="problem-report-legend-en"><span class="field-name"><%= report_problem_legend %> </span></legend>
 										<div class="checkbox">
-											<label for="gc-rprt-prblm-f1">
-												<input type="checkbox" name="problem1" value="Yes" id="gc-rprt-prblm-f1">A
-												link, button or video is not working
-											</label>
+											<input type="checkbox" name="problem1" value="Yes" id="gc-rprt-prblm-f1" aria-labelledby="gc-rprt-prblm-f1-lbl">
+											<label id="gc-rprt-prblm-f1-lbl" for="gc-rprt-prblm-f1"><%= report_problem_issue_1 %></label>
 											<input name="problem1" type="hidden" value="No">
 										</div>
 										<div class="checkbox">
-											<label for="gc-rprt-prblm-f2">
-												<input type="checkbox" name="problem2" value="Yes" id="gc-rprt-prblm-f2">It
-												has a spelling mistake
-											</label>
+											<input type="checkbox" name="problem2" value="Yes" id="gc-rprt-prblm-f2" aria-labelledby="gc-rprt-prblm-f2-lbl">
+											<label id="gc-rprt-prblm-f2-lbl" for="gc-rprt-prblm-f2"><%= report_problem_issue_2 %></label>
 											<input name="problem2" type="hidden" value="No">
 										</div>
 										<div class="checkbox">
-											<label for="gc-rprt-prblm-f3">
-												<input type="checkbox" name="problem3" value="Yes"
-													id="gc-rprt-prblm-f3">Information is missing
-											</label>
+											<input type="checkbox" name="problem3" value="Yes" id="gc-rprt-prblm-f3" aria-labelledby="gc-rprt-prblm-f3-lbl">
+											<label id="gc-rprt-prblm-f3-lbl" for="gc-rprt-prblm-f3"><%= report_problem_issue_3 %></label>
 											<input name="problem3" type="hidden" value="No">
 										</div>
 										<div class="checkbox">
-											<label for="gc-rprt-prblm-f4">
-												<input type="checkbox" name="problem4" value="Yes"
-													id="gc-rprt-prblm-f4">Information is outdated or wrong
-											</label>
+											<input type="checkbox" name="problem4" value="Yes" id="gc-rprt-prblm-f4" aria-labelledby="gc-rprt-prblm-f4-lbl">
+											<label id="gc-rprt-prblm-f4-lbl" for="gc-rprt-prblm-f4"><%= report_problem_issue_4 %></label>
 											<input name="problem4" type="hidden" value="No">
 										</div>
 										<div class="checkbox">
-											<label for="gc-rprt-prblm-f5">
-												<input type="checkbox" name="problem5" value="Yes" id="gc-rprt-prblm-f5">I
-												can't find what I'm looking for
-											</label>
+											<input type="checkbox" name="problem5" value="Yes" id="gc-rprt-prblm-f5" aria-labelledby="gc-rprt-prblm-f5-lbl">
+											<label id="gc-rprt-prblm-f5-lbl" for="gc-rprt-prblm-f5"><%= report_problem_issue_5 %></label>
 											<input name="problem5" type="hidden" value="No">
 										</div>
 										<div class="checkbox">
-											<label for="gc-rprt-prblm-f6">
-												<input type="checkbox" name="problem6" value="Yes"
-													id="gc-rprt-prblm-f6">Other issue not in this list
-											</label>
+											<input type="checkbox" name="problem6" value="Yes" id="gc-rprt-prblm-f6" aria-labelledby="gc-rprt-prblm-f6-lbl">
+											<label id="gc-rprt-prblm-f6-lbl" for="gc-rprt-prblm-f6"><%= report_problem_issue_6 %></label>
 											<input name="problem6" type="hidden" value="No">
 										</div>
 									</fieldset>
 									<button type="submit" class="btn btn-primary wb-toggle"
-										data-toggle='{"stateOff": "hide", "stateOn": "show", "selector": ".gc-rprt-prblm-tggl"}'>Submit</button>
+										data-toggle='{"stateOff": "hide", "stateOn": "show", "selector": ".gc-rprt-prblm-tggl"}'><%= submit %></button>
 								</form>
 							</div>
 							<div class="gc-rprt-prblm-thnk gc-rprt-prblm-tggl hide">
-								<h3>Thank you for your help!</h3>
-								<p>You will not receive a reply. For enquiries, please <a
-										href="https://www.canada.ca/en/contact.html">contact us</a>.</p>
+								<h3><%= report_problem_thank_you_heading %></h3>
+								<p><%= report_problem_no_reply_text %> <a href="https://www.canada.ca/en/contact.html"><%= contactUs_label %></a>.</p>
 							</div>
 						</div>
 					</div>
@@ -141,7 +119,7 @@
 				data-wb-share='{"lnkClass": "btn btn-default btn-block"}'></div>
 		</div>
 		<dl id="wb-dtmd">
-			<dt>Date modified:&#32;</dt>
+			<dt><%= date_modified %>:&#32;</dt>
 			<dd><time property="dateModified">2022-01-25</time></dd>
 		</dl>
 	</div>

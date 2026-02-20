@@ -12,7 +12,7 @@
 			</div>
 		</div>
 		<div class="row mrgn-tp-md">
-			<nav role="navigation" class="col-md-3">
+			<nav role="navigation" class="col-md-3" aria-label="<%= request_parameters_nav_aria_label %>">
 			<div class="panel panel-default">
 				<header class="panel-heading">
 				<h2 class="panel-title"><%= request_parameters %></h2>
@@ -29,7 +29,7 @@
 				
 						<% oidc_clients.forEach( (client) => { %>
 						<p> 
-							<a class="btn btn-primary" id="<%= client.name %>" href="/auth/<%= client.name %>/en" onclick="submitWithQueryString(this)"><span class="fas fa-sign-in-alt"></span> <%= signin %></a> <% if ( client.sic != false ) {%> <%= sic_label %> - <% } %><%= client.description %>
+							<a class="btn btn-primary" id="<%= client.name %>" href="/auth/<%= client.name %>/<%= lang %>" onclick="submitWithQueryString(this)"><span class="fas fa-sign-in-alt"></span> <%= signin %></a> <% if ( client.sic != false ) {%> <%= sic_label %> - <% } %><%= client.description %>
 						</p>
 						<%});%>
 					</div>
