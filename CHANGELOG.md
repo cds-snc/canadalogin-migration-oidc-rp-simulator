@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.4](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/compare/v1.1.3...v1.1.4) (2026-02-24)
+
+
+### Bug Fixes
+
+* **deps:** Update README with commit message guidelines ([#31](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/issues/31)) ([4677c67](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/commit/4677c674365155d3bd1516dd33c6d6646918ace2))
+
 ## [1.1.3](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/compare/v1.1.2...v1.1.3) (2026-02-18)
 
 
