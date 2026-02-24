@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="<%= lang %>">
+<%- include('head')-%>
+
+<body onload="setOptionsValues()" vocab="http://schema.org/" typeof="WebPage" class="page-home">
+  <%- include('header', { loginMigrationLoginLink, signInMenuLink })-%>
+  <main property="mainContentOfPage" class="container">
+    <div class="row">
+      <div class="col-md-9 col-lg-8">
+        <h1 property="name" id="wb-cont"><%= help_label %></h1>
+        <p>
+          <%= lang === 'fr'
+            ? 'Contenu d’aide de démonstration pour le flux de migration du compte du Régime canadien de soins dentaires.'
+            : 'Mock help content for the Canadian Dental Care Plan Account migration flow.' %>
+        </p>
+        <p>
+          <%= lang === 'fr'
+            ? 'Si vous avez une URL Figma, configurez HELP_CONTENT_URL (ou HELP_CONTENT_URL_FR / HELP_CONTENT_URL_EN) pour rediriger les liens d’aide vers ce prototype.'
+            : 'If you have a Figma URL, set HELP_CONTENT_URL (or HELP_CONTENT_URL_EN / HELP_CONTENT_URL_FR) to send help links to that prototype.' %>
+        </p>
+      </div>
+    </div>
+    <%- include('preFooter')-%>
+  </main>
+  <%- include('footer')-%>
+</body>
+</html>

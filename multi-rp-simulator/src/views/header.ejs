@@ -47,13 +47,14 @@
 		<h2 id="wb-main-menu-nav" class="wb-inv"><%= main_menu_aria_label %></h2>
 		<button type="button" aria-haspopup="true" aria-expanded="false"><span class="wb-inv"><%= main_menu_aria_label %> </span><%= menu_label %> <span class="expicon glyphicon glyphicon-chevron-down"></span></button>
 		<% const menuSignInLink = signInMenuLink || loginMigrationLoginLink || home_link; %>
+		<% const menuHelpLink = helpContentLink || help_link || '#'; %>
 		<ul role="menu" aria-orientation="vertical">
 		  <li role="presentation"><a role="menuitem" href="<%= home_link %>" ><%= home_label %></a></li>
 		  <% if (!isLoggedIn) { %>
 		  <li role="presentation"><a role="menuitem" href="<%= menuSignInLink %>" ><%= signin %></a></li>
 		  <%}%>
 		  <li role="presentation"><a role="menuitem" href="<%= response_link %>" ><%= response_label %></a></li>
-		  <li role="presentation"><a role="menuitem" href="" ><%= help_label %></a></li>
+		  <li role="presentation"><a role="menuitem" href="<%= menuHelpLink %>" ><%= help_label %></a></li>
 		  <li role="presentation"><a role="menuitem" href="<%= gc_link %>"><%= gc_menu_link_label %></a></li>
 		</ul>
 	  </div>

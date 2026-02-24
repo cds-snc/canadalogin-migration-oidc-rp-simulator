@@ -45,7 +45,7 @@
             </div>
             <div class="col-md-12">
                <div class="mrgn-tp-lg">
-                  <!-- Section 1: GC Sign in -->
+                  <!-- Section 1: CanadaLogin -->
                   <section id="panel-gc-signin" class="signin-panel hidden" aria-hidden="true">
                      <h2 class="h3 mrgn-tp-0"><%= use_canadalogin_heading %></h2>
                      <p><%= redirect_canadalogin_text %></p>
@@ -115,7 +115,7 @@
                      <section class="alert alert-info mrgn-tp-lg" role="note">
                         <h3 class="h5 mrgn-tp-0"><%= migration_more_info_heading %></h3>
                         <p class="mrgn-bttm-0">
-                           <a href="#" target="_blank" rel="noopener noreferrer">
+                           <a href="<%= helpContentLink || migration_update_signin_link_url || help_link %>" target="_blank" rel="noopener noreferrer">
                            <%= migration_update_signin_link_text %><span class="wb-inv"> <%= opens_new_tab_sr %></span>
                            </a>
                         </p>
@@ -175,7 +175,7 @@
                      <section class="alert alert-info mrgn-tp-lg" role="note">
                         <h3 class="h5 mrgn-tp-0"><%= migration_more_info_heading %></h3>
                         <p class="mrgn-bttm-0">
-                           <a href="#" target="_blank" rel="noopener noreferrer">
+                           <a href="<%= helpContentLink || migration_update_signin_link_url || help_link %>" target="_blank" rel="noopener noreferrer">
                            <%= migration_update_signin_link_text %><span class="wb-inv"> <%= opens_new_tab_sr %></span>
                            </a>
                         </p>

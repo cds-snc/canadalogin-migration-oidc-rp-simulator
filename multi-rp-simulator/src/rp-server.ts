@@ -78,6 +78,18 @@ function getSignInPageLink(lang?: string): string | undefined {
   return appendLang(fromEnv);
 }
 
+function getHelpContentLink(lang?: string): string {
+  const localized =
+    (lang === 'fr' ? process.env.HELP_CONTENT_URL_FR : process.env.HELP_CONTENT_URL_EN) ||
+    process.env.HELP_CONTENT_URL;
+
+  if (localized && localized.trim().length > 0) {
+    return localized.trim();
+  }
+
+  return lang === 'fr' ? '/rpsim/help-content/fr' : '/rpsim/help-content/en';
+}
+
 type SignInFlow = 'all' | 'no-interac';
 type OidcClient = (typeof oidc_clients)[number];
 
@@ -129,7 +141,6 @@ function getSignInMenuLink(page: string, lang: string, flow: SignInFlow, fallbac
       return fallback;
   }
 }
-
 
 /**
 
@@ -469,7 +480,8 @@ export class ServerExpress {
       data = {
         ...data,
         loginMigrationLoginLink: loginMigrationLoginLink,
-        signInMenuLink: signInMenuLink
+        signInMenuLink: signInMenuLink,
+        helpContentLink: getHelpContentLink(req.params.lang)
       }
       console.log("========= rpsim endpoint ====== ")
       console.log(req.params.page)
@@ -497,20 +509,18 @@ export class ServerExpress {
             ...data,
             signInPageLink: getSignInPageLink(req.params.lang),
             oidc_clients: oidc_clients.map((item) => { return { name: item.name, description: item.description, sic: item.sic } }),
-            flowAllPageLink: `/rpsim/flow-all-home/${req.params.lang}`,
-            flowNoInteracPageLink: `/rpsim/flow-no-interac-home/${req.params.lang}`,
+            flowAllPageLink: `/rpsim/flow-all/${req.params.lang}`,
+            flowNoInteracPageLink: `/rpsim/flow-no-interac/${req.params.lang}`,
             manualClientSelectionLink: `/rpsim/login/${req.params.lang}`
           }
           res.render('FCACHomePage', data)
           break;
         case 'flow-all-home':
-        case 'flow-no-interac-home': {
-          data = {
-            ...data
-          }
-          res.render('flowHomePage', data)
+          res.redirect(`/rpsim/flow-all/${req.params.lang}`);
           break;
-        }
+        case 'flow-no-interac-home':
+          res.redirect(`/rpsim/flow-no-interac/${req.params.lang}`);
+          break;
         case 'flow-all':
         case 'flow-no-interac': {
           const flowFromPage: SignInFlow = req.params.page === 'flow-no-interac' ? 'no-interac' : 'all';
@@ -545,6 +555,12 @@ export class ServerExpress {
             userinfo: req.session.userinfo
           }
           res.render('response', data)
+          break;
+        case 'dashboard':
+          res.render('dashboard', data)
+          break;
+        case 'help-content':
+          res.render('helpContent', data)
           break;
         default:
           data = {
@@ -659,7 +675,7 @@ export class ServerExpress {
       const baseUrl = computeBaseUrl(req, resolvedPort);
       this.publicBaseUrl = baseUrl;
 
-      const redirectUri = `${baseUrl}/rpsim/response/${currentLocale}`;
+      const redirectUri = `${baseUrl}/rpsim/dashboard/${currentLocale}`;
       console.log(redirectUri)
 
       res.redirect(redirectUri);
