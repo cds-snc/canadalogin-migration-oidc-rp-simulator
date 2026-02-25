@@ -78,12 +78,9 @@
 			<div class="row">
 				<div class="col-md-12">
 					<% if (isLoggedIn) { %>
-						<form action="/signout">
-							<button id="signout" class="btn btn-primary" style="padding: 10px 14px;" type="submit">	
-								<span class="fas fa-power-off" aria-hidden="true"/>
-								<%= signout %>
-							</button>
-						</form>
+							<form action="/signout">
+								<button id="signout" class="btn btn-primary" style="padding: 10px 14px;" type="submit"><%= signout %></button>
+							</form>
 					<%}%>
 				</div>
 			</div>
