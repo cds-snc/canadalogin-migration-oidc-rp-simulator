@@ -30,9 +30,7 @@
 
 							<% oidc_clients.forEach((client) => { %>
 							<div class="wet4-provider-row">
-								<a class="btn btn-primary wet4-provider-btn" id="<%= client.name %>" href="/auth/<%= client.name %>/<%= lang %>" onclick="submitWithQueryString(this)">
-									<span class="fas fa-sign-in-alt" aria-hidden="true"></span> <%= signin %>
-								</a>
+									<a class="btn btn-primary wet4-provider-btn" id="<%= client.name %>" href="/auth/<%= client.name %>/<%= lang %>" onclick="submitWithQueryString(this)"><%= signin %></a>
 								<span class="wet4-provider-text"><% if (client.sic != false) { %><%= sic_label %> - <% } %><%= client.description %></span>
 							</div>
 							<% }); %>
