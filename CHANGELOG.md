@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.2.0](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/compare/v1.1.5...v1.2.0) (2026-02-26)
+
+
+### Features
+
+* deploy RP Sim to staging ([e915a9d](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/commit/e915a9d5cb2172703cb3e86e36e078db1e987bfa))
+* Deploy RP Sim to staging ([69fbbbb](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/commit/69fbbbb4e4d8af55f61d42b5701b05c588e902d0))
+* Merge pull request [#36](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/issues/36) from cds-snc/copilot/update-release-pipeline-staging ([69fbbbb](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/commit/69fbbbb4e4d8af55f61d42b5701b05c588e902d0))
+
 ## [1.1.5](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/compare/v1.1.4...v1.1.5) (2026-02-25)
 
 
