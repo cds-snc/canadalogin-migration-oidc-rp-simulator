@@ -1,0 +1,168 @@
+<link rel="stylesheet" href="./signinpage-stepper.guidance.css">
+
+<div class="row profile">
+            <div class="col-md-12">
+               <h1 property="name" id="wb-cont">Sign in to your CDCP Account</h1>
+            </div>
+            <div class="col-md-12">
+               <fieldset class="mrgn-tp-sm">
+                  <legend>How did you sign in last time?</legend>
+                  <p>If you&#39;re not sure, you can select CanadaLogin.</p>
+                  <div class="radio">
+                     <label>
+                     <input type="radio" name="signin" value="gc-signin">
+                     <span class="text-bold">CanadaLogin</span><br>
+                     <span class="text-muted">Email and password</span>
+                     </label>
+                  </div>
+                  <div class="radio">
+                     <label>
+                     <input type="radio" name="signin" value="gckey">
+                     <span class="text-bold">GCKey</span><br>
+                     <span class="text-muted">Username and password</span>
+                     </label>
+                  </div>
+                  
+                  <div class="radio">
+                     <label>
+                     <input type="radio" name="signin" value="interac">
+                     <span class="text-bold">Interac sign-in partner</span><br>
+                     <span class="text-muted">Canadian banks and credit unions</span>
+                     </label>
+                  </div>
+                  
+               </fieldset>
+            </div>
+            <div class="col-md-12">
+               <div class="mrgn-tp-lg">
+                  <!-- Section 1: CanadaLogin -->
+                  <section id="panel-gc-signin" class="signin-panel">
+                     <h2 class="h3 mrgn-tp-0">Use your CanadaLogin</h2>
+                     <p>You will be redirected to sign in with your CanadaLogin.</p>
+                      <p class="mrgn-tp-md">
+                        <a 
+                            class="btn btn-primary" 
+                            href="[This should be your RP action URL]"
+                            >
+                            Sign in with CanadaLogin
+                        </a> 
+                     </p>
+                  </section>
+                  <!-- Section 2: GCKey -->
+                  <section id="panel-gckey" class="signin-panel">
+                     <h2 class="h3 mrgn-tp-0">GCKey is being replaced</h2>
+                     <p>
+                        Please complete the steps below to <strong>keep your existing Canada Dental Care Plan Account data.</strong>
+                     </p>
+                     <ol class="gc-stepper" role="list">
+                        <li class="gc-stepper__item is-current" aria-current="step">
+                           <div class="gc-stepper__dot">
+                              <span class="wb-inv">Current step: Step 1</span>
+                           </div>
+                           <div class="gc-stepper__title">Step 1</div>
+                           <div class="gc-stepper__desc">Create a CanadaLogin or sign in</div>
+                        </li>
+                        <li class="gc-stepper__item">
+                           <div class="gc-stepper__dot">
+                              <span class="wb-inv">Step 2</span>
+                           </div>
+                           <div class="gc-stepper__title">Step 2</div>
+                           <div class="gc-stepper__desc">Link your old sign-in method</div>
+                        </li>
+                        <li class="gc-stepper__item">
+                           <div class="gc-stepper__dot">
+                              <span class="wb-inv">Step 3</span>
+                           </div>
+                           <div class="gc-stepper__title">Step 3</div>
+                           <div class="gc-stepper__desc">Access your existing account</div>
+                        </li>
+                     </ol>
+                     
+                     <h3 class="h4">Step 1: Create a CanadaLogin if you don&#39;t have one</h3>
+                     <p>If you&#39;ve already used CanadaLogin on another service, you can enter your email and password.</p>
+                     
+                     <h3 class="h4">Step 2: Link your GCKey</h3>
+                     <p>Use the GCKey you used the last time you signed in to this service.</p>
+                     
+                     <h3 class="h4">Step 3: Access your existing account</h3>
+                     <p>After linking, you&#39;ll continue to your existing account.</p>
+                     <p class="mrgn-tp-md">
+                        <a 
+                            class="btn btn-primary" 
+                            href="[This should be your RP action URL]"
+                            >
+                            Start Step 1
+                        </a> 
+                     </p>
+
+                     <!-- "For more information" block -->
+                     <section class="alert alert-info mrgn-tp-lg" role="note">
+                        <h3 class="h5 mrgn-tp-0">For more information</h3>
+                        <p class="mrgn-bttm-0">
+                           <a href="[This should be your RP help content URL]" target="_blank" rel="noopener noreferrer">
+                           How to update your sign-in method<span class="wb-inv"> (opens in a new tab)</span>
+                           </a>
+                        </p>
+                     </section>
+                     </section>
+                  
+                  <!-- Section 3: Interac -->
+                  <section id="panel-interac" class="signin-panel">
+                     <h2 class="h3 mrgn-tp-0">Interac sign-in partners are being replaced</h2>
+                     <p>
+                        Please complete the steps below to <strong>keep your existing Canada Dental Care Plan Account data.</strong>
+                     </p>
+                     <ol class="gc-stepper" role="list">
+                        <li class="gc-stepper__item is-current" aria-current="step">
+                           <div class="gc-stepper__dot">
+                              <span class="wb-inv">Current step: Step 1</span>
+                           </div>
+                           <div class="gc-stepper__title">Step 1</div>
+                           <div class="gc-stepper__desc">Create a CanadaLogin or sign in</div>
+                        </li>
+                        <li class="gc-stepper__item">
+                           <div class="gc-stepper__dot">
+                              <span class="wb-inv">Step 2</span>
+                           </div>
+                           <div class="gc-stepper__title">Step 2</div>
+                           <div class="gc-stepper__desc">Link your old sign-in method</div>
+                        </li>
+                        <li class="gc-stepper__item">
+                           <div class="gc-stepper__dot">
+                              <span class="wb-inv">Step 3</span>
+                           </div>
+                           <div class="gc-stepper__title">Step 3</div>
+                           <div class="gc-stepper__desc">Access your existing account</div>
+                        </li>
+                     </ol>
+                     
+                     <h3 class="h4">Step 1: Create a CanadaLogin if you don&#39;t have one</h3>
+                     <p>If you&#39;ve already used CanadaLogin on another service, you can enter your email and password.</p>
+                     
+                     <h3 class="h4">Step 2: Link your Interac sign-in partner</h3>
+                     <p>Use the bank sign in you used the last time you signed in to this service.</p>
+                     
+                     <h3 class="h4">Step 3: Access your existing account</h3>
+                     <p>After linking, you&#39;ll continue to your existing account.</p>
+                     
+                     <p class="mrgn-tp-md">
+                        <a 
+                            class="btn btn-primary" 
+                            href="[This should be your RP action URL]"
+                            >
+                            Start Step 1
+                        </a> 
+                     </p>
+                     <section class="alert alert-info mrgn-tp-lg" role="note">
+                        <h3 class="h5 mrgn-tp-0">For more information</h3>
+                        <p class="mrgn-bttm-0">
+                           <a href="[This should be your RP help content URL]" target="_blank" rel="noopener noreferrer">
+                           How to update your sign-in method<span class="wb-inv"> (opens in a new tab)</span>
+                           </a>
+                        </p>
+                     </section>
+                  </section>
+                  
+               </div>
+            </div>
+         </div>
