@@ -20,14 +20,14 @@
                   <p><%= signin_not_sure_hint %></p>
                   <div class="radio">
                      <label>
-                     <input type="radio" name="signin" value="gc-signin" aria-controls="panel-gc-signin" aria-expanded="false">
+                     <input type="radio" name="signin" value="gc-signin" aria-controls="panel-gc-signin" aria-expanded="false" data-announce="<%= use_canadalogin_heading %>">
                      <span class="text-bold"><%= canadalogin_label %></span><br>
                      <span class="text-muted"><%= email_password_label %></span>
                      </label>
                   </div>
                   <div class="radio">
                      <label>
-                     <input type="radio" name="signin" value="gckey" aria-controls="panel-gckey" aria-expanded="false">
+                     <input type="radio" name="signin" value="gckey" aria-controls="panel-gckey" aria-expanded="false" data-announce="<%= gckey_replaced_heading %>">
                      <span class="text-bold"><%= gckey_label %></span><br>
                      <span class="text-muted"><%= username_password_label %></span>
                      </label>
@@ -35,7 +35,7 @@
                   <% if (showInteracOption) { %>
                   <div class="radio">
                      <label>
-                     <input type="radio" name="signin" value="interac" aria-controls="panel-interac" aria-expanded="false">
+                     <input type="radio" name="signin" value="interac" aria-controls="panel-interac" aria-expanded="false" data-announce="<%= interac_replaced_heading %>">
                      <span class="text-bold"><%= interac_partner_label %></span><br>
                      <span class="text-muted"><%= interac_banks_credit_unions_label %></span>
                      </label>
@@ -44,10 +44,11 @@
                </fieldset>
             </div>
             <div class="col-md-12">
+               <div id="signin-panel-announcement" class="wb-inv" role="status" aria-live="polite" aria-atomic="true"></div>
                <div class="mrgn-tp-lg">
                   <!-- Section 1: CanadaLogin -->
-                  <section id="panel-gc-signin" class="signin-panel hidden" aria-hidden="true">
-                     <h2 class="h3 mrgn-tp-0"><%= use_canadalogin_heading %></h2>
+                  <section id="panel-gc-signin" class="signin-panel hidden" aria-hidden="true" role="region" aria-labelledby="panel-gc-signin-heading">
+                     <h2 id="panel-gc-signin-heading" class="h3 mrgn-tp-0"><%= use_canadalogin_heading %></h2>
                      <p><%= redirect_canadalogin_text %></p>
                       <p class="mrgn-tp-md">
                         <a 
@@ -61,8 +62,8 @@
                      </p>
                   </section>
                   <!-- Section 2: GCKey -->
-                  <section id="panel-gckey" class="signin-panel hidden" aria-hidden="true">
-                     <h2 class="h3 mrgn-tp-0"><%= gckey_replaced_heading %></h2>
+                  <section id="panel-gckey" class="signin-panel hidden" aria-hidden="true" role="region" aria-labelledby="panel-gckey-heading">
+                     <h2 id="panel-gckey-heading" class="h3 mrgn-tp-0"><%= gckey_replaced_heading %></h2>
                      <p>
                         <%= migration_intro_prefix %> <strong><%= migration_intro_emphasis %></strong>
                      </p>
@@ -121,8 +122,8 @@
                      </section>
                   <% if (showInteracOption) { %>
                   <!-- Section 3: Interac -->
-                  <section id="panel-interac" class="signin-panel hidden" aria-hidden="true">
-                     <h2 class="h3 mrgn-tp-0"><%= interac_replaced_heading %></h2>
+                  <section id="panel-interac" class="signin-panel hidden" aria-hidden="true" role="region" aria-labelledby="panel-interac-heading">
+                     <h2 id="panel-interac-heading" class="h3 mrgn-tp-0"><%= interac_replaced_heading %></h2>
                      <p>
                         <%= migration_intro_prefix %> <strong><%= migration_intro_emphasis %></strong>
                      </p>
@@ -184,46 +185,64 @@
          </div>
          <script>
             (function () {
-                const radios = document.querySelectorAll('input[name="signin"]');
-                const panels = document.querySelectorAll('.signin-panel');
-            
+                const radios = Array.from(document.querySelectorAll('input[name="signin"]'));
+                const panels = Array.from(document.querySelectorAll('.signin-panel'));
+                const liveRegion = document.getElementById('signin-panel-announcement');
+                const announcePrefix = <%- JSON.stringify(signin_panel_now_showing_prefix) %>;
+
                 function hideAllPanels() {
                     panels.forEach(panel => {
-                    panel.classList.add('hidden');
-                    panel.setAttribute('aria-hidden', 'true');
+                        panel.classList.add('hidden');
+                        panel.setAttribute('aria-hidden', 'true');
                     });
 
                     radios.forEach(radio => {
-                    radio.setAttribute('aria-expanded', 'false');
+                        radio.setAttribute('aria-expanded', 'false');
                     });
                 }
-            
-                function showPanel(value) {
-                    const panel = document.getElementById('panel-' + value);
+
+                function announcePanel(radio) {
+                    if (!liveRegion) return;
+                    const panelText = radio ? radio.getAttribute('data-announce') : '';
+                    if (!panelText) return;
+
+                    liveRegion.textContent = '';
+                    window.requestAnimationFrame(() => {
+                        liveRegion.textContent = announcePrefix + ' ' + panelText;
+                    });
+                }
+
+                function showPanel(radio, options) {
+                    if (!radio) return;
+                    const panelId = radio.getAttribute('aria-controls');
+                    const panel = panelId ? document.getElementById(panelId) : null;
                     if (!panel) return;
 
                     panel.classList.remove('hidden');
                     panel.setAttribute('aria-hidden', 'false');
+                    radio.setAttribute('aria-expanded', 'true');
 
-                    const selectedRadio = document.querySelector('input[name="signin"][value="' + value + '"]');
-                    if (selectedRadio) {
-                    selectedRadio.setAttribute('aria-expanded', 'true');
+                    if (options && options.announce) {
+                        announcePanel(radio);
                     }
                 }
-            
+
                 radios.forEach(radio => {
                     radio.addEventListener('change', function () {
-                    hideAllPanels();
-                    showPanel(this.value);
+                        hideAllPanels();
+                        showPanel(this, {
+                            announce: true
+                        });
                     });
-            });
-            
-            // Optional: show panel if a radio is pre-selected
-            const checked = document.querySelector('input[name="signin"]:checked');
-            if (checked) {
-                hideAllPanels();
-                showPanel(checked.value);
-            }
+                });
+
+                const checked = document.querySelector('input[name="signin"]:checked');
+                if (checked) {
+                    hideAllPanels();
+                    showPanel(checked, {
+                        announce: false
+                    });
+                }
             })();
          </script>
          <style>
