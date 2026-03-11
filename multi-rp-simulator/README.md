@@ -19,7 +19,7 @@ See the complementary project at https://github.com/sign-in-canada/oidc-provider
 
 Flow mapping for sign-in tests is fixed in code:
 - `/rpsim/flow-all/*` uses `client2`
-- `/rpsim/flow-no-interac/*` uses `client4`
+- `/rpsim/flow-no-interac/*` uses `client1`
 
 Each configured client should use a callback URI that matches its provider route, for example:
 - `client1 -> /auth/callback/client1`
