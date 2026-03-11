@@ -98,26 +98,48 @@ function parseSignInFlow(flow: unknown): SignInFlow {
   return normalized === 'no-interac' ? 'no-interac' : 'all';
 }
 
-function resolveFlowClient(envKey: string, fallbackIndex: number): OidcClient | undefined {
-  const configuredName = process.env[envKey];
+function parseBooleanQueryFlag(value: unknown): boolean | undefined {
+  const normalized = Array.isArray(value) ? value[0] : value;
 
-  if (configuredName) {
-    const configuredClient = oidc_clients.find((item) => item.name === configuredName);
-    if (configuredClient) {
-      return configuredClient;
-    }
-    console.warn(`[flows] ${envKey}="${configuredName}" does not match a configured client. Falling back.`);
+  if (typeof normalized === 'boolean') {
+    return normalized;
   }
 
-  return oidc_clients[fallbackIndex] || oidc_clients[0];
+  if (typeof normalized !== 'string') {
+    return undefined;
+  }
+
+  const trimmed = normalized.trim().toLowerCase();
+  if (['1', 'true', 'yes', 'y'].includes(trimmed)) {
+    return true;
+  }
+
+  if (['0', 'false', 'no', 'n'].includes(trimmed)) {
+    return false;
+  }
+
+  return undefined;
 }
 
-function getSignInFlowClients() {
+function resolveFlowClientByName(name: string): OidcClient | undefined {
+  const configuredClient = oidc_clients.find((item) => item.name === name);
+  if (configuredClient) {
+    return configuredClient;
+  }
+
+  console.warn(`[flows] required client "${name}" is not configured. Falling back.`);
+  return undefined;
+}
+
+function getSignInFlowClients(flow: SignInFlow) {
+  const flowClientName = flow === 'no-interac' ? 'client1' : 'client2';
+  const flowClient = resolveFlowClientByName(flowClientName) || oidc_clients[0];
+
   return {
-    registerClient: resolveFlowClient('FLOW_REGISTER_CLIENT', 2),
-    gcSigninClient: resolveFlowClient('FLOW_GCSIGNIN_CLIENT', 2),
-    gcKeyClient: resolveFlowClient('FLOW_GCKEY_CLIENT', 1),
-    interacClient: resolveFlowClient('FLOW_INTERAC_CLIENT', 1),
+    registerClient: flowClient,
+    gcSigninClient: flowClient,
+    gcKeyClient: flowClient,
+    interacClient: flowClient,
   };
 }
 
@@ -473,8 +495,13 @@ export class ServerExpress {
         ui_config: ui_config,
         isLoggedIn: req.user != undefined
       }
-      const signInFlow = parseSignInFlow(req.query.flow);
-      const flowClients = getSignInFlowClients();
+      const queryFlow = parseSignInFlow(req.query.flow);
+      const signInFlow: SignInFlow = req.params.page === 'flow-no-interac'
+        ? 'no-interac'
+        : req.params.page === 'flow-all'
+          ? 'all'
+          : queryFlow;
+      const flowClients = getSignInFlowClients(signInFlow);
       const loginMigrationLoginLink = getLoginMigrationLink(req.params.lang) || `/rpsim/loginMigration/${req.params.lang}`;
       const signInMenuLink = getSignInMenuLink(req.params.page, req.params.lang, signInFlow, loginMigrationLoginLink);
       data = {
@@ -528,7 +555,9 @@ export class ServerExpress {
             ...data,
             signInPageLink: `/rpsim/signinpage/${req.params.lang}?flow=${flowFromPage}`,
             oidc_clients: oidc_clients.map((item) => { return { name: item.name, description: item.description, sic: item.sic } }),
-            registerLink: flowClients.registerClient ? `/auth/${flowClients.registerClient.name}/${req.params.lang}?flow=${flowFromPage}` : undefined
+            registerLink: flowClients.registerClient
+              ? `/auth/${flowClients.registerClient.name}/${req.params.lang}?flow=${flowFromPage}&skipmigration=true`
+              : undefined
           }
           res.render('flowSignRegister', data)
           break;
@@ -603,9 +632,12 @@ export class ServerExpress {
       const provider = req.params.provider
 
       const clientSelected = oidc_clients.find(item => item.name === provider)
+      const skipMigrationOverride = parseBooleanQueryFlag(
+        (req.query as any).skipMigration ?? (req.query as any).skipmigration
+      );
 
       const toSkip = clientSelected
-        ? clientSelected.skip 
+        ? (skipMigrationOverride ?? clientSelected.skip)
         : false;
 
       console.log(" ==== to skip =====")

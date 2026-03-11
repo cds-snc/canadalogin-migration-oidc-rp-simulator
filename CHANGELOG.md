@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/compare/v1.2.0...v1.2.1) (2026-03-06)
+
+
+### Bug Fixes
+
+* **wcag:** added some alerting for the cred selector page ([#40](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/issues/40)) ([fb461d4](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/commit/fb461d424782628431f034ede17b8b3fb8881df9))
+
 ## [1.2.0](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/compare/v1.1.5...v1.2.0) (2026-02-26)
 
 
