@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.2.2](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/compare/v1.2.1...v1.2.2) (2026-03-11)
+
+
+### Bug Fixes
+
+* Feature/support for gckey only flow ([#42](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/issues/42)) ([d63ece4](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/commit/d63ece4420ea5a2bee8f9a8ba5c887be7a80933e))
+* **wcag:** added some alerting for the cred selector page ([#44](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/issues/44)) ([38650c1](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/commit/38650c1b7d560c6eac5b6397d34cac2a402f4852))
+* **wcag:** set alert funcitonaity properly ([#46](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/issues/46)) ([7df7d00](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/commit/7df7d000d012c57e9e51683a866aa3d7614c2dff))
+
 ## [1.2.1](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/compare/v1.2.0...v1.2.1) (2026-03-06)
 
 
