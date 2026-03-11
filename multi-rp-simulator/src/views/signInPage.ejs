@@ -44,7 +44,7 @@
                </fieldset>
             </div>
             <div class="col-md-12">
-               <div id="signin-panel-announcement" class="wb-inv" role="status" aria-live="polite" aria-atomic="true"></div>
+               <div id="signin-panel-announcement" class="wb-inv" role="alert" aria-live="assertive" aria-atomic="true"></div>
                <div class="mrgn-tp-lg">
                   <!-- Section 1: CanadaLogin -->
                   <section id="panel-gc-signin" class="signin-panel hidden" aria-hidden="true" role="region" aria-labelledby="panel-gc-signin-heading">
@@ -189,6 +189,7 @@
                 const panels = Array.from(document.querySelectorAll('.signin-panel'));
                 const liveRegion = document.getElementById('signin-panel-announcement');
                 const announcePrefix = <%- JSON.stringify(signin_panel_now_showing_prefix) %>;
+                let shouldFocusPanel = false;
 
                 function hideAllPanels() {
                     panels.forEach(panel => {
@@ -212,6 +213,16 @@
                     });
                 }
 
+                function setFocus(panel) {
+                    if (!panel) return;
+                    const heading = panel.querySelector('h2, h3, [role="heading"]');
+                    if (!heading) return;
+                    if (!heading.hasAttribute('tabindex')) {
+                        heading.setAttribute('tabindex', '-1');
+                    }
+                    heading.focus();
+                }
+
                 function showPanel(radio, options) {
                     if (!radio) return;
                     const panelId = radio.getAttribute('aria-controls');
@@ -225,14 +236,24 @@
                     if (options && options.announce) {
                         announcePanel(radio);
                     }
+
+                    if (options && options.focusPanel) {
+                        setFocus(panel);
+                    }
                 }
 
                 radios.forEach(radio => {
+                    radio.addEventListener('click', function () {
+                        shouldFocusPanel = true;
+                    });
+
                     radio.addEventListener('change', function () {
                         hideAllPanels();
                         showPanel(this, {
-                            announce: true
+                            announce: true,
+                            focusPanel: shouldFocusPanel
                         });
+                        shouldFocusPanel = false;
                     });
                 });
 
