@@ -132,7 +132,7 @@ function resolveFlowClientByName(name: string): OidcClient | undefined {
 }
 
 function getSignInFlowClients(flow: SignInFlow) {
-  const flowClientName = flow === 'no-interac' ? 'client1' : 'client2';
+  const flowClientName = flow === 'no-interac' ? 'client2' : 'client1';
   const flowClient = resolveFlowClientByName(flowClientName) || oidc_clients[0];
 
   return {
