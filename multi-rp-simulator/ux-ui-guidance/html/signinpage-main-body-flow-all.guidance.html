@@ -10,14 +10,14 @@
                   <p>If you&#39;re not sure, you can select CanadaLogin.</p>
                   <div class="radio">
                      <label>
-                     <input type="radio" name="signin" value="gc-signin">
+                     <input type="radio" name="signin" value="gc-signin" data-announce="Use your CanadaLogin">
                      <span class="text-bold">CanadaLogin</span><br>
                      <span class="text-muted">Email and password</span>
                      </label>
                   </div>
                   <div class="radio">
                      <label>
-                     <input type="radio" name="signin" value="gckey">
+                     <input type="radio" name="signin" value="gckey" data-announce="GCKey is being replaced">
                      <span class="text-bold">GCKey</span><br>
                      <span class="text-muted">Username and password</span>
                      </label>
@@ -25,7 +25,7 @@
                   
                   <div class="radio">
                      <label>
-                     <input type="radio" name="signin" value="interac">
+                     <input type="radio" name="signin" value="interac" data-announce="Interac sign-in partners are being replaced">
                      <span class="text-bold">Interac sign-in partner</span><br>
                      <span class="text-muted">Canadian banks and credit unions</span>
                      </label>
@@ -34,10 +34,11 @@
                </fieldset>
             </div>
             <div class="col-md-12">
+               <div id="signin-panel-announcement" class="wb-inv" role="alert" aria-live="assertive" aria-atomic="true"></div>
                <div class="mrgn-tp-lg">
                   <!-- Section 1: CanadaLogin -->
-                  <section id="panel-gc-signin" class="signin-panel">
-                     <h2 class="h3 mrgn-tp-0">Use your CanadaLogin</h2>
+                  <section id="panel-gc-signin" class="signin-panel" role="region" aria-labelledby="panel-gc-signin-heading">
+                     <h2 id="panel-gc-signin-heading" class="h3 mrgn-tp-0">Use your CanadaLogin</h2>
                      <p>You will be redirected to sign in with your CanadaLogin.</p>
                       <p class="mrgn-tp-md">
                         <a 
@@ -49,8 +50,8 @@
                      </p>
                   </section>
                   <!-- Section 2: GCKey -->
-                  <section id="panel-gckey" class="signin-panel">
-                     <h2 class="h3 mrgn-tp-0">GCKey is being replaced</h2>
+                  <section id="panel-gckey" class="signin-panel" role="region" aria-labelledby="panel-gckey-heading">
+                     <h2 id="panel-gckey-heading" class="h3 mrgn-tp-0">GCKey is being replaced</h2>
                      <p>
                         Please complete the steps below to <strong>keep your existing Canada Dental Care Plan Account data.</strong>
                      </p>
@@ -107,8 +108,8 @@
                      </section>
                   
                   <!-- Section 3: Interac -->
-                  <section id="panel-interac" class="signin-panel">
-                     <h2 class="h3 mrgn-tp-0">Interac sign-in partners are being replaced</h2>
+                  <section id="panel-interac" class="signin-panel" role="region" aria-labelledby="panel-interac-heading">
+                     <h2 id="panel-interac-heading" class="h3 mrgn-tp-0">Interac sign-in partners are being replaced</h2>
                      <p>
                         Please complete the steps below to <strong>keep your existing Canada Dental Care Plan Account data.</strong>
                      </p>
