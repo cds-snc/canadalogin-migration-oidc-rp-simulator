@@ -3,7 +3,7 @@ import createError from 'http-errors';
 import { Issuer } from 'openid-client';
 import expressSession from 'express-session';
 import passport from 'passport';
-import { oidc_clients, sessionSecret, ui_config } from '../config';
+import { authExtraParameters, oidc_clients, sessionSecret, ui_config } from '../config';
 import { locales_en, locales_fr } from './locales/translations';
 
 import { OpenIDConnectStrategy } from './strategy';
@@ -952,7 +952,7 @@ async function registerStrategy(cli, params) {
     const client = new issuer.Client(cli.config);
     passport.use(
       cli.name,
-      new OpenIDConnectStrategy({ client, params, passReqToCallback: true }, (req, tokenSet, userinfo, done) => {
+      new OpenIDConnectStrategy({ client, params, passReqToCallback: true, extraAuthorizationParams: authExtraParameters }, (req, tokenSet, userinfo, done) => {
         req.session.tokenSet = tokenSet;
         req.session.userinfo = userinfo;
 

@@ -16,6 +16,17 @@ const pick = (object, ...paths) => {
   return obj;
 };
 
+const appendExtraAuthorizationParams = (params, extraAuthorizationParams) => {
+  for (const key of Object.keys(extraAuthorizationParams || {})) {
+    if (params[key] !== undefined) {
+      console.warn(`[oidc] skipping AUTH_EXTRA_PARAMETERS key "${key}" because the authorize request already defines it`);
+      continue;
+    }
+
+    params[key] = extraAuthorizationParams[key];
+  }
+};
+
 const resolveResponseType = function resolveResponseType() {
   const { length, 0: value } = this.response_types;
   if (length === 1) {
@@ -44,12 +55,12 @@ function verified(err, user, info = {}) {
     this.success(user, info);
   }
 }
-type TOpenIDConnectStrategyArgs = { client: BaseClient; params?: any; passReqToCallback?: boolean; sessionKey?: string; usePKCE?: boolean; extras?: any };
+type TOpenIDConnectStrategyArgs = { client: BaseClient; params?: any; passReqToCallback?: boolean; sessionKey?: string; usePKCE?: boolean; extras?: any; extraAuthorizationParams?: Record<string, string> };
 /**
  * @name constructor
  * @api public
  */
-export function OpenIDConnectStrategy({ client, params = {}, passReqToCallback = false, sessionKey, usePKCE = true, extras = {} }: TOpenIDConnectStrategyArgs, verify) {
+export function OpenIDConnectStrategy({ client, params = {}, passReqToCallback = false, sessionKey, usePKCE = true, extras = {}, extraAuthorizationParams = {} }: TOpenIDConnectStrategyArgs, verify) {
   if (BaseClient && !(client instanceof BaseClient)) {
     throw new TypeError('client must be an instance of openid-client Client');
   }
@@ -70,6 +81,7 @@ export function OpenIDConnectStrategy({ client, params = {}, passReqToCallback =
   this._key = sessionKey || `oidc:${url.parse(this._issuer.issuer).hostname}`;
   this._params = cloneDeep(params);
   this._extras = cloneDeep(extras);
+  this._extraAuthorizationParams = cloneDeep(extraAuthorizationParams);
 
   if (!this._params.response_type) this._params.response_type = resolveResponseType.call(client);
   if (!this._params.redirect_uri) this._params.redirect_uri = resolveRedirectUri.call(client);
@@ -149,6 +161,7 @@ OpenIDConnectStrategy.prototype.authenticate = function authenticate(req, option
         params.skipmigration = "true";
       }
       params.lang = options.lang || 'en';
+      appendExtraAuthorizationParams(params, this._extraAuthorizationParams);
       console.log(" ==== Auth Request lang =====")
       console.log(params.lang);
       //save the authentication request parameters
