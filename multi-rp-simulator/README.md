@@ -4,6 +4,8 @@ Source code and configuration for the Sign in Canada OIDC Relying Party Simulato
 
 Copy `.env.example` to `.env` and fill in required values.
 
+To append debug values to every authorize request, set `AUTH_EXTRA_PARAMETERS` in `.env` as a query-string fragment, for example `fakeparam1=adasdasd&fakeparam2=adasdafdfshfd`.
+
 Local (non-Docker):
 - `npm i`
 - `npm run build`

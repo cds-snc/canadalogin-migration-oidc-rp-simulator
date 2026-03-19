@@ -1,6 +1,7 @@
 
   import { config } from 'dotenv';
   import { ClientAuthMethod } from 'openid-client';
+  import { URLSearchParams } from 'url';
 
   config();
 
@@ -28,7 +29,33 @@
       .filter(Boolean);
   };
 
+  const envQueryParams = (key: string) => {
+    const value = env(key);
+    if (!value) {
+      return {};
+    }
+
+    const normalized = value.trim().replace(/^\?/, '');
+    if (!normalized) {
+      return {};
+    }
+
+    const params: Record<string, string> = {};
+    const searchParams = new URLSearchParams(normalized);
+
+    searchParams.forEach((paramValue, paramKey) => {
+      if (!paramKey) {
+        return;
+      }
+
+      params[paramKey] = paramValue;
+    });
+
+    return params;
+  };
+
   export const sessionSecret = env('SESSION_SECRET') as string;
+  export const authExtraParameters = envQueryParams('AUTH_EXTRA_PARAMETERS');
 
   // Print the session secret length.
   console.log(`XXXXXXXXXXX Session secret length: ${sessionSecret.length}`);
