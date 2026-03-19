@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.4](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/compare/v1.2.3...v1.2.4) (2026-03-19)
+
+
+### Bug Fixes
+
+* **dashboard:** make dashboard page match figma better ([#50](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/issues/50)) ([7993ec2](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/commit/7993ec258288b4770c07a7fee7f012bb955fc0d4))
+* **extraParam:** support for extra params to be sent for RPs that have them for their initial auth request ([#49](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/issues/49)) ([31065ea](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/commit/31065ea2d1b04d061472e9b263984ac3595ab759))
+
 ## [1.2.3](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/compare/v1.2.2...v1.2.3) (2026-03-12)
 
 
