@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.5](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/compare/v1.2.4...v1.2.5) (2026-03-20)
+
+
+### Bug Fixes
+
+* **feature:** added new client for passkey testing with UX team, also cleaned up how clients are added and managed since was sorta hardcoded ([#52](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/issues/52)) ([d268682](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/commit/d268682d86da1f3dff2e148bb5768e798d10b0a8))
+
 ## [1.2.4](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/compare/v1.2.3...v1.2.4) (2026-03-19)
 
 
