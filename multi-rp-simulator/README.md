@@ -19,13 +19,21 @@ Local (Docker):
 
 See the complementary project at https://github.com/sign-in-canada/oidc-provider
 
-Flow mapping for sign-in tests is fixed in code:
+By default, sign-in test flow pages use these clients:
 - `/rpsim/flow-all/*` uses `client1`
 - `/rpsim/flow-no-interac/*` uses `client2`
+
+Optional page-level overrides are available in `.env` when you need a dedicated UX/testing client:
+- `FLOW_ALL_CLIENT`
+- `FLOW_NO_INTERAC_CLIENT`
+- `LOGIN_MIGRATION_REGISTER_CLIENT`
+
+Only clients with a non-empty `CLIENTn_URL` are loaded, so placeholder entries like `client5` stay inactive until configured.
 
 Each configured client should use a callback URI that matches its provider route, for example:
 - `client1 -> /auth/callback/client1`
 - `client2 -> /auth/callback/client2`
+- `client5 -> /auth/callback/client5`
 
 Back-channel logout:
 - Register a provider-specific back-channel logout URI with your OP, for example:

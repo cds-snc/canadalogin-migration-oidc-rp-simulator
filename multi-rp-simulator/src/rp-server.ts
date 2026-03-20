@@ -3,7 +3,7 @@ import createError from 'http-errors';
 import { Issuer } from 'openid-client';
 import expressSession from 'express-session';
 import passport from 'passport';
-import { authExtraParameters, oidc_clients, sessionSecret, ui_config } from '../config';
+import { authExtraParameters, oidc_clients, pageClientConfig, sessionSecret, ui_config } from '../config';
 import { locales_en, locales_fr } from './locales/translations';
 
 import { OpenIDConnectStrategy } from './strategy';
@@ -121,19 +121,26 @@ function parseBooleanQueryFlag(value: unknown): boolean | undefined {
   return undefined;
 }
 
-function resolveFlowClientByName(name: string): OidcClient | undefined {
-  const configuredClient = oidc_clients.find((item) => item.name === name);
+function resolveConfiguredClientByName(name: string, context = 'configured'): OidcClient | undefined {
+  const normalizedName = name && name.trim();
+  if (!normalizedName) {
+    return undefined;
+  }
+
+  const configuredClient = oidc_clients.find((item) => item.name === normalizedName);
   if (configuredClient) {
     return configuredClient;
   }
 
-  console.warn(`[flows] required client "${name}" is not configured. Falling back.`);
+  console.warn(`[config] ${context} client "${normalizedName}" is not configured. Falling back.`);
   return undefined;
 }
 
 function getSignInFlowClients(flow: SignInFlow) {
-  const flowClientName = flow === 'no-interac' ? 'client2' : 'client1';
-  const flowClient = resolveFlowClientByName(flowClientName) || oidc_clients[0];
+  const flowClientName = flow === 'no-interac'
+    ? pageClientConfig.flowNoInteracClient
+    : pageClientConfig.flowAllClient;
+  const flowClient = resolveConfiguredClientByName(flowClientName, 'flow') || oidc_clients[0];
 
   return {
     registerClient: flowClient,
@@ -522,14 +529,22 @@ export class ServerExpress {
           }
           res.render('login', data)
           break;
-        case 'loginMigration':
+        case 'loginMigration': {
+          const loginMigrationRegisterClient = resolveConfiguredClientByName(
+            pageClientConfig.loginMigrationRegisterClient,
+            'login migration register'
+          );
           data = {
             ...data,
             signInPageLink: getSignInPageLink(req.params.lang),
-            oidc_clients: oidc_clients.map((item) => { return { name: item.name, description: item.description, sic: item.sic } })
+            oidc_clients: oidc_clients.map((item) => { return { name: item.name, description: item.description, sic: item.sic } }),
+            registerLink: loginMigrationRegisterClient
+              ? `/auth/${loginMigrationRegisterClient.name}/${req.params.lang}`
+              : undefined
           }
           res.render('loginMigration', data)
           break;
+        }
         case 'FCACHomePage':
         case 'testflows':
           data = {
