@@ -6,8 +6,8 @@
       <main property="mainContentOfPage" class="container">
          <%
             const flowName = signInFlow === 'no-interac' ? 'no-interac' : 'all';
-            const gcSigninClientName = gcSigninClient ? gcSigninClient.name : (oidc_clients[2] && oidc_clients[2].name);
-            const gcKeyClientName = gcKeyClient ? gcKeyClient.name : (oidc_clients[1] && oidc_clients[1].name);
+            const gcSigninClientName = gcSigninClient ? gcSigninClient.name : undefined;
+            const gcKeyClientName = gcKeyClient ? gcKeyClient.name : undefined;
             const interacClientName = interacClient ? interacClient.name : gcKeyClientName;
          %>
          <div class="row profile">
