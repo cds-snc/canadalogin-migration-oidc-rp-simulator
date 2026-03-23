@@ -600,9 +600,10 @@ export class ServerExpress {
           }
           res.render('response', data)
           break;
-        case 'dashboard':
+        case 'dashboard': {
           res.render('dashboard', data)
           break;
+        }
         case 'help-content':
           res.render('helpContent', data)
           break;
@@ -623,6 +624,7 @@ export class ServerExpress {
       if (sessionProvider) {
         delete req.session.authProvider;
       }
+      req.session.requestedProvider = sessionProvider || callbackProvider;
 
       console.log(" ========= /auth/callback/:provider");
       console.log(provider);
@@ -692,8 +694,10 @@ export class ServerExpress {
 
     app.get('/success/:provider', (req: RequestWithUserSession, res) => {
       const provider = req.params.provider
+      const requestedProvider = req.session.requestedProvider || provider
       // save teh current provider in req.session for the logout
       req.session.provider = provider
+      req.session.requestedProvider = requestedProvider
 
       console.log(" ========= /success/:provider")
       console.log(provider)
@@ -721,6 +725,13 @@ export class ServerExpress {
 
       const baseUrl = computeBaseUrl(req, resolvedPort);
       this.publicBaseUrl = baseUrl;
+
+      const redirectClient = oidc_clients.find((item) => item.name === requestedProvider);
+      const customRedirectUrl = redirectClient?.customRedirectUrl;
+      if (customRedirectUrl) {
+        console.log(customRedirectUrl);
+        return res.redirect(customRedirectUrl);
+      }
 
       const redirectUri = `${baseUrl}/rpsim/dashboard/${currentLocale}`;
       console.log(redirectUri)

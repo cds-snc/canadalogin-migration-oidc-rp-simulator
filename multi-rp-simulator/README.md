@@ -35,6 +35,9 @@ Each configured client should use a callback URI that matches its provider route
 - `client2 -> /auth/callback/client2`
 - `client5 -> /auth/callback/client5`
 
+Optional post-login redirect:
+- Set `CLIENT5_CUSTOM_REDIRECT_URL` when you want `client5` to redirect the browser to an external URL immediately after successful sign-in.
+
 Back-channel logout:
 - Register a provider-specific back-channel logout URI with your OP, for example:
   - `http://localhost:8080/backchannel-logout/client1`
