@@ -77,10 +77,12 @@
     return {
       name: clientName,
       description: env(`${prefix}_DESCRIPTION`, clientName),
+      autoLogoutAfterLogin: envBool(`${prefix}_AUTO_LOGOUT_AFTER_LOGIN`, false),
       skip: envBool(`${prefix}_SKIP`, false),
       sic: envBool(`${prefix}_SIC`, false),
       ap: env(`${prefix}_URL`),
       customRedirectUrl: envTrimmed(`${prefix}_CUSTOM_REDIRECT_URL`),
+      customLogoutRedirectUrl: envTrimmed(`${prefix}_CUSTOM_LOGOUT_REDIRECT_URL`),
       config: {
         client_id: env(`${prefix}_CLIENT_ID`),
         client_secret: env(`${prefix}_CLIENT_SECRET`),

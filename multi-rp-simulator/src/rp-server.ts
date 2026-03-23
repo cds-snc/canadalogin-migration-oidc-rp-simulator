@@ -727,6 +727,10 @@ export class ServerExpress {
       this.publicBaseUrl = baseUrl;
 
       const redirectClient = oidc_clients.find((item) => item.name === requestedProvider);
+      if (redirectClient?.autoLogoutAfterLogin) {
+        return res.redirect(`/logout/${currentLocale}/true`);
+      }
+
       const customRedirectUrl = redirectClient?.customRedirectUrl;
       if (customRedirectUrl) {
         console.log(customRedirectUrl);
@@ -829,10 +833,18 @@ export class ServerExpress {
 
     app.get('/logout/callback', (req: RequestWithUserSession, res) => {
       const locale = getLocale(req);
+      const logoutRedirectProvider = req.session?.requestedProvider || req.session?.provider;
+      const logoutRedirectClient = logoutRedirectProvider
+        ? oidc_clients.find((item) => item.name === logoutRedirectProvider)
+        : undefined;
+      const customLogoutRedirectUrl = logoutRedirectClient?.customLogoutRedirectUrl;
       clearSessionFromBackChannelIndex((req as any).sessionID);
 
       const finishSessionCleanup = () => {
         if (!req.session || typeof req.session.destroy !== 'function') {
+          if (customLogoutRedirectUrl) {
+            return res.redirect(customLogoutRedirectUrl);
+          }
           return res.redirect(`/rpsim/login/${locale}`);
         }
 
@@ -840,6 +852,10 @@ export class ServerExpress {
           if (err) {
             console.error('[logout/callback] session destroy failed', err);
             return res.status(500).render('error', { err: err });
+          }
+
+          if (customLogoutRedirectUrl) {
+            return res.redirect(customLogoutRedirectUrl);
           }
 
           return res.redirect(`/rpsim/login/${locale}`);
