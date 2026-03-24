@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.3.0](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/compare/v1.2.5...v1.3.0) (2026-03-24)
+
+
+### Features
+
+* **dashboard:** added different view for dashboard. ([#57](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/issues/57)) ([7e07ddb](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/commit/7e07ddb1e505b06058aa46a243546eb05251b00f))
+
+
+### Bug Fixes
+
+* **feature:** add custom redirect post authentication to support UX t… ([#54](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/issues/54)) ([c26cb6b](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/commit/c26cb6b01232130466bd02aa41ce3b47986272cc))
+* **language:** fixed language from ibm and response page to display claims ([#56](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/issues/56)) ([5f4fa25](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/commit/5f4fa2522f6a88da9acc9ff9c8de89d0307913fa))
+
 ## [1.2.5](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/compare/v1.2.4...v1.2.5) (2026-03-20)
 
 
