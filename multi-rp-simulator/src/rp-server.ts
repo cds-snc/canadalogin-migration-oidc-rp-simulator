@@ -78,6 +78,18 @@ function getSignInPageLink(lang?: string): string | undefined {
   return appendLang(fromEnv);
 }
 
+function getManageProfileLink(lang?: string): string {
+  const localized =
+    (lang === 'fr' ? process.env.MANAGE_PROFILE_URL_FR : process.env.MANAGE_PROFILE_URL_EN) ||
+    process.env.MANAGE_PROFILE_URL;
+
+  if (localized && localized.trim().length > 0) {
+    return localized.trim();
+  }
+
+  return lang === 'fr' ? '/rpsim/fr/manage' : '/rpsim/en/manage';
+}
+
 function getHelpContentLink(lang?: string): string {
   const localized =
     (lang === 'fr' ? process.env.HELP_CONTENT_URL_FR : process.env.HELP_CONTENT_URL_EN) ||
@@ -703,10 +715,13 @@ export class ServerExpress {
           }
           res.render('response', data)
           break;
-        case 'dashboard': {
+        case 'dashboard':
+          data = {
+            ...data,
+            manageProfileLink: getManageProfileLink(req.params.lang)
+          }
           res.render('dashboard', data)
           break;
-        }
         case 'help-content':
           res.render('helpContent', data)
           break;
