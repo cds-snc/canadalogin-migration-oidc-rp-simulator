@@ -600,9 +600,10 @@ export class ServerExpress {
           }
           res.render('response', data)
           break;
-        case 'dashboard':
+        case 'dashboard': {
           res.render('dashboard', data)
           break;
+        }
         case 'help-content':
           res.render('helpContent', data)
           break;
@@ -623,6 +624,7 @@ export class ServerExpress {
       if (sessionProvider) {
         delete req.session.authProvider;
       }
+      req.session.requestedProvider = sessionProvider || callbackProvider;
 
       console.log(" ========= /auth/callback/:provider");
       console.log(provider);
@@ -692,8 +694,10 @@ export class ServerExpress {
 
     app.get('/success/:provider', (req: RequestWithUserSession, res) => {
       const provider = req.params.provider
+      const requestedProvider = req.session.requestedProvider || provider
       // save teh current provider in req.session for the logout
       req.session.provider = provider
+      req.session.requestedProvider = requestedProvider
 
       console.log(" ========= /success/:provider")
       console.log(provider)
@@ -721,6 +725,17 @@ export class ServerExpress {
 
       const baseUrl = computeBaseUrl(req, resolvedPort);
       this.publicBaseUrl = baseUrl;
+
+      const redirectClient = oidc_clients.find((item) => item.name === requestedProvider);
+      if (redirectClient?.autoLogoutAfterLogin) {
+        return res.redirect(`/logout/${currentLocale}/true`);
+      }
+
+      const customRedirectUrl = redirectClient?.customRedirectUrl;
+      if (customRedirectUrl) {
+        console.log(customRedirectUrl);
+        return res.redirect(customRedirectUrl);
+      }
 
       const redirectUri = `${baseUrl}/rpsim/dashboard/${currentLocale}`;
       console.log(redirectUri)
@@ -818,10 +833,18 @@ export class ServerExpress {
 
     app.get('/logout/callback', (req: RequestWithUserSession, res) => {
       const locale = getLocale(req);
+      const logoutRedirectProvider = req.session?.requestedProvider || req.session?.provider;
+      const logoutRedirectClient = logoutRedirectProvider
+        ? oidc_clients.find((item) => item.name === logoutRedirectProvider)
+        : undefined;
+      const customLogoutRedirectUrl = logoutRedirectClient?.customLogoutRedirectUrl;
       clearSessionFromBackChannelIndex((req as any).sessionID);
 
       const finishSessionCleanup = () => {
         if (!req.session || typeof req.session.destroy !== 'function') {
+          if (customLogoutRedirectUrl) {
+            return res.redirect(customLogoutRedirectUrl);
+          }
           return res.redirect(`/rpsim/login/${locale}`);
         }
 
@@ -829,6 +852,10 @@ export class ServerExpress {
           if (err) {
             console.error('[logout/callback] session destroy failed', err);
             return res.status(500).render('error', { err: err });
+          }
+
+          if (customLogoutRedirectUrl) {
+            return res.redirect(customLogoutRedirectUrl);
           }
 
           return res.redirect(`/rpsim/login/${locale}`);
