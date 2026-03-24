@@ -336,6 +336,109 @@ function getSessionTokenClaims(req: RequestWithUserSession) {
   }
 }
 
+const localeCandidateKeys = ['locale', 'ui_locales', 'uiLocales', 'lang', 'language', 'preferredLanguage', 'preferred_language'];
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
+}
+
+function normalizeLocale(value: unknown): 'en' | 'fr' | undefined {
+  if (typeof value !== 'string') {
+    return undefined;
+  }
+
+  const normalized = value.trim().toLowerCase();
+  if (!normalized) {
+    return undefined;
+  }
+
+  if (normalized.startsWith('fr')) {
+    return 'fr';
+  }
+
+  if (normalized.startsWith('en')) {
+    return 'en';
+  }
+
+  return undefined;
+}
+
+function getLocaleCandidates(source: unknown): Record<string, string> {
+  if (!isRecord(source)) {
+    return {};
+  }
+
+  const candidates: Record<string, string> = {};
+
+  localeCandidateKeys.forEach((key) => {
+    const value = source[key];
+    if (typeof value === 'string' && value.trim().length > 0) {
+      candidates[key] = value;
+    }
+  });
+
+  return candidates;
+}
+
+function getObjectKeys(source: unknown): string[] {
+  if (!isRecord(source)) {
+    return [];
+  }
+
+  return Object.keys(source).sort();
+}
+
+function readTokenClaims(tokenSet: any) {
+  if (!tokenSet || typeof tokenSet.claims !== 'function') {
+    return undefined;
+  }
+
+  try {
+    return tokenSet.claims();
+  } catch (error) {
+    console.warn('[oidc] could not read token claims for locale logging', error);
+    return undefined;
+  }
+}
+
+function resolveLocaleFromSources(userinfo: unknown, tokenClaims: unknown, reqParams: unknown) {
+  const orderedSources: Array<[string, Record<string, string>]> = [
+    ['userinfo', getLocaleCandidates(userinfo)],
+    ['tokenClaims', getLocaleCandidates(tokenClaims)],
+    ['reqParams', getLocaleCandidates(reqParams)],
+  ];
+
+  for (const [sourceName, candidates] of orderedSources) {
+    for (const key of localeCandidateKeys) {
+      const locale = normalizeLocale(candidates[key]);
+      if (locale) {
+        return { locale, source: `${sourceName}.${key}` };
+      }
+    }
+  }
+
+  return { locale: 'en' as const, source: 'default' };
+}
+
+function logOidcLocaleSignals(req: RequestWithUserSession, userinfo?: unknown, tokenSet?: any) {
+  const tokenClaims = readTokenClaims(tokenSet) || getSessionTokenClaims(req);
+  const reqParams = req.session && req.session.reqParams;
+  const localeResolution = resolveLocaleFromSources(userinfo, tokenClaims, reqParams);
+
+  console.log('[oidc] locale signals on callback', {
+    provider: req.session?.requestedProvider || req.session?.provider || req.params?.provider,
+    callbackQueryKeys: getObjectKeys(req.query),
+    callbackLocaleParams: getLocaleCandidates(req.query),
+    authRequestLocaleParams: getLocaleCandidates(reqParams),
+    userinfoLocaleClaims: getLocaleCandidates(userinfo),
+    userinfoKeys: getObjectKeys(userinfo),
+    idTokenLocaleClaims: getLocaleCandidates(tokenClaims),
+    idTokenClaimKeys: getObjectKeys(tokenClaims),
+    resolvedLocale: localeResolution.locale,
+    localeSource: localeResolution.source
+  });
+}
+
 function resolveLogoutHint(req: RequestWithUserSession): string | undefined {
   const tokenClaims = getSessionTokenClaims(req) || {};
 
@@ -594,7 +697,7 @@ export class ServerExpress {
           data = {
             ...data,
             reqParams: req.session.reqParams,
-            user: req.user,
+            user: req.user || req.session.tokenClaims,
             tokenSet: req.session.tokenSet,
             userinfo: req.session.userinfo
           }
@@ -628,6 +731,8 @@ export class ServerExpress {
 
       console.log(" ========= /auth/callback/:provider");
       console.log(provider);
+      console.log('[oidc] callback query keys', Object.keys(req.query || {}).sort());
+      console.log('[oidc] callback locale query params', getLocaleCandidates(req.query));
 
       if (sessionProvider && sessionProvider !== callbackProvider) {
         console.warn(`[oidc] callback provider mismatch: path=${callbackProvider} session=${sessionProvider}. Ignoring session provider value.`);
@@ -640,6 +745,7 @@ export class ServerExpress {
       }
 
       passport.authenticate(provider, {
+        keepSessionInfo: true,
         successRedirect: `/success/${provider}`,
         failureRedirect: `/error?error=${req.query.error}: ${req.query.error_description}`,
       })(req, res, next);
@@ -719,7 +825,13 @@ export class ServerExpress {
       }
 
       
-      const rawLocale = getLocale(req);
+      const localeResolution = resolveLocaleFromSources(
+        req.session && req.session.userinfo,
+        getSessionTokenClaims(req),
+        req.session && req.session.reqParams
+      );
+      console.log('[oidc] post-auth locale resolution', localeResolution);
+      const rawLocale = localeResolution.locale;
 
       const currentLocale = rawLocale === 'fr' ? 'fr' : 'en';
 
@@ -995,8 +1107,10 @@ async function registerStrategy(cli, params) {
     passport.use(
       cli.name,
       new OpenIDConnectStrategy({ client, params, passReqToCallback: true, extraAuthorizationParams: authExtraParameters }, (req, tokenSet, userinfo, done) => {
-        req.session.tokenSet = tokenSet;
-        req.session.userinfo = userinfo;
+        req.session.tokenSet = { ...tokenSet };
+        req.session.tokenClaims = readTokenClaims(tokenSet);
+        req.session.userinfo = isRecord(userinfo) ? { ...userinfo } : userinfo;
+        logOidcLocaleSignals(req, userinfo, tokenSet);
 
         return done(null, tokenSet.claims());
       })
@@ -1048,11 +1162,10 @@ function buildWellKnownUrl(issuerUrl: string) {
 }
 
 function getLocale(req: RequestWithUserSession) {
-  const userinfo = req.session && req.session.userinfo
-  const reqParams = req.session && req.session.reqParams
-  const locale = (userinfo && userinfo.locale ? userinfo.locale.substring(0, 2) : (reqParams && reqParams.ui_locales ? reqParams.ui_locales.substring(0, 2) : 'en'))
-
-  return locale === 'fr' ? 'fr' : 'en'
+  const userinfo = req.session && req.session.userinfo;
+  const reqParams = req.session && req.session.reqParams;
+  const tokenClaims = getSessionTokenClaims(req);
+  return resolveLocaleFromSources(userinfo, tokenClaims, reqParams).locale;
 }
 
 new ServerExpress().start();
