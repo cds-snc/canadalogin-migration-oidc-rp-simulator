@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.1](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/compare/v1.3.0...v1.3.1) (2026-03-25)
+
+
+### Bug Fixes
+
+* **fallbackCode:** added fallback urls formanage profile link and updated .env.example for this value ([#59](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/issues/59)) ([235d2b8](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/commit/235d2b88ae4bae8e6fb102b4d4825d8ef4ef293c))
+
 ## [1.3.0](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/compare/v1.2.5...v1.3.0) (2026-03-24)
 
 
