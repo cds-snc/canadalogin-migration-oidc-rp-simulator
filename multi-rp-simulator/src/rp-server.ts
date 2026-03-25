@@ -10,6 +10,10 @@ import { OpenIDConnectStrategy } from './strategy';
 
 
 export const DEFAULT_PORT = process.env.PORT || 8080;
+const DEFAULT_MANAGE_PROFILE_URL_DEV = 'https://app.login-connexion.cdssandbox.xyz';
+const DEFAULT_MANAGE_PROFILE_URL_TEST = 'https://app.test.login-connexion.cdssandbox.xyz';
+const DEFAULT_MANAGE_PROFILE_URL_STAGING = 'https://app.login-connexion.alpha.canada.ca';
+const DEFAULT_MANAGE_PROFILE_URL_PROD = 'https://app.login-connexion.canada.ca';
 
 // Public/base URL used to construct redirect URIs when running behind a proxy or in deployed environments.
 // Prefer setting PUBLIC_BASE_URL (e.g., https://rpsim.example.gc.ca) in your .env.
@@ -42,6 +46,42 @@ function parseCsvUris(value: string | undefined): string[] {
 
 function uniq(arr: string[]): string[] {
   return Array.from(new Set(arr));
+}
+
+function getHostname(value: string): string {
+  try {
+    return new URL(value).hostname.toLowerCase();
+  } catch {
+    return value.toLowerCase();
+  }
+}
+
+function getDefaultManageProfileLink(): string {
+  const baseUrl = PUBLIC_BASE_URL?.trim();
+
+  if (baseUrl) {
+    const hostname = getHostname(baseUrl);
+
+    if (hostname === 'rp-sim.migration.login-connexion.alpha.canada.ca') {
+      return DEFAULT_MANAGE_PROFILE_URL_STAGING;
+    }
+
+    if (hostname === 'rp-sim.migration.login-connexion.canada.ca') {
+      return DEFAULT_MANAGE_PROFILE_URL_PROD;
+    }
+
+    if (hostname.startsWith('rp-sim.migration.')) {
+      return `https://app.${hostname.slice('rp-sim.migration.'.length)}`;
+    }
+
+    if (hostname.includes('cdssandbox.xyz')) {
+      return hostname.includes('.test.')
+        ? DEFAULT_MANAGE_PROFILE_URL_TEST
+        : DEFAULT_MANAGE_PROFILE_URL_DEV;
+    }
+  }
+
+  return DEFAULT_MANAGE_PROFILE_URL_DEV;
 }
 /**
  * Helper to resolve the Sign-In page link from env/config.
@@ -87,7 +127,7 @@ function getManageProfileLink(lang?: string): string {
     return localized.trim();
   }
 
-  return lang === 'fr' ? '/rpsim/fr/manage' : '/rpsim/en/manage';
+  return getDefaultManageProfileLink();
 }
 
 function getHelpContentLink(lang?: string): string {
