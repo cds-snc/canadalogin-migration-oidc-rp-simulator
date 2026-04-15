@@ -197,7 +197,7 @@ export const locales_fr = {
   fcac_register_heading: 'Créer un compte du CDCP',
   appbar_rp_heading: 'Régime canadien de soins dentaires',
   signin_button_label: 'Se connecter',
-  register_button_label: 'Créer un compte',
+  register_button_label: 'Créez un compte',
   signin_last_time_legend: 'Quelle méthode de connexion avez-vous utilisée lors de votre visite précédente?',
   signin_not_sure_hint: 'Si vous ne le savez pas, vous pouvez sélectionner Connexion GC.',
   canadalogin_label: 'Connexion GC',
