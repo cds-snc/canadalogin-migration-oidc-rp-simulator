@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.2](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/compare/v1.3.1...v1.3.2) (2026-04-15)
+
+
+### Bug Fixes
+
+* **lang:** fixed missed french translations ([#62](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/issues/62)) ([75f9ffd](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/commit/75f9ffdbbcd99c70a9fd756b35065d69ad1e29ad))
+* **lang:** fixed misspelt french word ([#61](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/issues/61)) ([0463d82](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/commit/0463d8200c1bcf9f7d186579f900b8ea5029a80e))
+
 ## [1.3.1](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/compare/v1.3.0...v1.3.1) (2026-03-25)
 
 
