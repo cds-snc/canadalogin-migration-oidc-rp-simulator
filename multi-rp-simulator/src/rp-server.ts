@@ -173,6 +173,20 @@ function parseBooleanQueryFlag(value: unknown): boolean | undefined {
   return undefined;
 }
 
+function getQueryString(value: unknown): string | undefined {
+  const normalized = Array.isArray(value) ? value[0] : value;
+  if (typeof normalized !== 'string') {
+    return undefined;
+  }
+
+  const trimmed = normalized.trim();
+  return trimmed.length > 0 ? trimmed : undefined;
+}
+
+function getDefaultUiLocales(lang: string): string {
+  return lang === 'fr' ? 'fr-CA' : 'en-CA';
+}
+
 function resolveConfiguredClientByName(name: string, context = 'configured'): OidcClient | undefined {
   const normalizedName = name && name.trim();
   if (!normalizedName) {
@@ -842,7 +856,8 @@ export class ServerExpress {
       const opts = {
         ...req.query,
         skipMigration: toSkip,
-        lang: currentLocale       // <— your injected value
+        lang: currentLocale,
+        ui_locales: getQueryString((req.query as any).ui_locales) || getDefaultUiLocales(currentLocale)
       };
 
       // Keep track of the selected provider so callback processing can use the same OIDC client.
