@@ -47,6 +47,10 @@
 				<summary><small>login_hint</small></summary>
 				<p>OPTIONNEL. Indication au serveur d'autorisations sur l'identifiant de connexion que l'utilisateur final peut utiliser pour se connecter (si nécessaire). Cet indice peut être utilisé par un RP s'il demande d'abord à l'adresse électronique (ou à un autre identifiant) de messagerie électronique, puis de transmettre cette valeur au conseil en tant qu'indicateur. Cette valeur PEUT aussi être un numéro de téléphone dans le format spécifié pour la revendication n ° de téléphone.</p>
 			</details>
+			<details id="details-panel9">
+				<summary><small>skipmigration</small></summary>
+				<p>OPTIONNEL. Lorsque cette option est sélectionnée, le paramètre skipmigration de la demande sera défini sur true pour tester le parcours qui ignore l'étape de migration lorsque le fournisseur le prend en charge.</p>
+			</details>
 		</div>
 	</div>
 <%} else {%>
@@ -99,7 +103,10 @@
 				<summary><small>login_hint</small></summary>
 				<p>OPTIONAL. Hint to the Authorization Server about the login identifier the End-User might use to log in (if necessary). This hint can be used by an RP if it first asks the End-User for their e-mail address (or other identifier) and then wants to pass that value as a hint to the discovered authorization service. It is RECOMMENDED that the hint value match the value used for discovery. This value MAY also be a phone number in the format specified for the phone_number Claim.</p>
 			</details>
+			<details id="details-panel9">
+				<summary><small>skipmigration</small></summary>
+				<p>OPTIONAL. When selected, the skipmigration request parameter will be set to true so migration testing can exercise the flow that skips the migration step when the provider supports it.</p>
+			</details>
 		</div>
 	</div>
 <%}%>
-
