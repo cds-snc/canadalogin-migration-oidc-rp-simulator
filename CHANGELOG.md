@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.3](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/compare/v1.3.2...v1.3.3) (2026-05-05)
+
+
+### Bug Fixes
+
+* **feature:** add skip migraiotn to auth toggles for testing purposes ([#65](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/issues/65)) ([adccb88](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/commit/adccb88a5f1976243bf53bf0bc4f507ecb3f1fe6))
+
 ## [1.3.2](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/compare/v1.3.1...v1.3.2) (2026-04-15)
 
 
