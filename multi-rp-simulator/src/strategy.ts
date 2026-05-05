@@ -117,9 +117,8 @@ OpenIDConnectStrategy.prototype.authenticate = function authenticate(req, option
     console.log(" =============== ");
     console.log(options);
 
-    const toSkip = options
-        ? options.skipMigration 
-        : false;
+    const { skipMigration, ...authorizationOptions } = options || {};
+    const toSkip = skipMigration === true;
 
 
     /* start authentication request */
@@ -131,7 +130,7 @@ OpenIDConnectStrategy.prototype.authenticate = function authenticate(req, option
       const params = {
         state: random(),
         ...this._params,
-        ...options,
+        ...authorizationOptions,
       };
 
       if (!params.nonce && params.response_type.includes('id_token')) {
@@ -160,7 +159,7 @@ OpenIDConnectStrategy.prototype.authenticate = function authenticate(req, option
       if(toSkip === true){
         params.skipmigration = "true";
       }
-      params.lang = options.lang || 'en';
+      params.lang = authorizationOptions.lang || 'en';
       appendExtraAuthorizationParams(params, this._extraAuthorizationParams);
       console.log(" ==== Auth Request lang =====")
       console.log(params.lang);

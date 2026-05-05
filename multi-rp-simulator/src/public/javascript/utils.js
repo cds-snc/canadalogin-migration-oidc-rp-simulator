@@ -54,6 +54,7 @@ function setOptionsValues() {
     const login_hint = localStorage.getItem('login_hint'); 
     const id_token_hint = localStorage.getItem('id_token_hint');
     const ui_locales = localStorage.getItem('ui_locales');
+    const skipmigration = localStorage.getItem('skipmigration');
 
     setValueIfPresent('max_age', max_age);
     setValueIfPresent('acr_values', acr_values);
@@ -65,6 +66,7 @@ function setOptionsValues() {
     if (!id_token_hint) storeVal('id_token_hint', 'true');
     setCheckedIfPresent('id_token_hint', id_token_hint || 'true');
     setCheckedIfPresent('ui_locales', ui_locales);
+    setCheckedIfPresent('skipmigration', skipmigration);
 
     // store lang_locale: for login page redirection purpose (to the right language)
     localStorage.setItem('lang_locale', getCurrentLocale());
@@ -102,6 +104,7 @@ function submitWithQueryString(obj) {
     const ui_locales = document.getElementById('ui_locales');
     const nonce = document.getElementById('nonce');
     const login_hint = document.getElementById('login_hint');
+    const skipmigration = document.getElementById('skipmigration');
 
     if ( scope ) cspUrl.searchParams.set('scope', scope.options[scope.selectedIndex].text);
     if ( max_age && max_age.value ) cspUrl.searchParams.set('max_age', max_age.value);
@@ -109,6 +112,7 @@ function submitWithQueryString(obj) {
     if ( !ui_locales || ui_locales.checked ) cspUrl.searchParams.set('ui_locales', getCurrentLocale());
     if ( nonce && nonce.checked ) cspUrl.searchParams.set('nonce', randomString(32));
     if ( login_hint && login_hint.checked ) cspUrl.searchParams.set('login_hint', randomString(32));
+    if ( skipmigration && skipmigration.checked ) cspUrl.searchParams.set('skipmigration', 'true');
     if ( acr_values && acr_values.value != '' ) cspUrl.searchParams.set('acr_values', acr_values.value);
     if ( redirect_uri && redirect_uri.value != '' ) cspUrl.searchParams.set('redirect_uri', redirect_uri.value);
 
