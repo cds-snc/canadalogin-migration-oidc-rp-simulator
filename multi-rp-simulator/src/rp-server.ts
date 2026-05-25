@@ -1070,7 +1070,7 @@ export class ServerExpress {
       }
 
       if (!(await ensureStrategy(provider))) {
-        return res.status(400).send(`Unknown provider: ${provider}`);
+        return res.status(400).send('Unknown provider');
       }
 
       const strategy = passport._strategy(provider);
