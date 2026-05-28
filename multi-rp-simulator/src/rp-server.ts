@@ -616,7 +616,10 @@ export class ServerExpress {
         resave: false,
         saveUninitialized: true,
         cookie: {
-          maxAge: 600000
+          maxAge: 600000,
+          secure: 'auto',
+          httpOnly: true,
+          sameSite: 'lax'
         }
       })
     );
