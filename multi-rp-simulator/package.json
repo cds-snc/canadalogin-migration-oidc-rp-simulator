@@ -46,7 +46,7 @@
   },
   "overrides": {
     "body-parser": {
-      "qs": "6.14.1"
+      "qs": "6.15.2"
     },
     "ts-node": {
       "diff": "8.0.3"
