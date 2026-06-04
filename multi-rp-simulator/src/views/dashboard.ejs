@@ -12,16 +12,19 @@
           <%= dashboard_intro %>
         </p>
         <nav aria-label="<%= dashboard_heading %>">
+          <% const dashboardActions = [
+            dashboard_action_letters,
+            dashboard_action_applicant_info,
+            dashboard_action_update_access
+          ].filter(Boolean); %>
           <ul class="list-unstyled mrgn-bttm-0">
-            <li class="mrgn-bttm-md"><a href="#">
-                <%= dashboard_action_letters %>
-              </a></li>
-            <li class="mrgn-bttm-md"><a href="#">
-                <%= dashboard_action_applicant_info %>
-              </a></li>
-            <li><a href="#">
-                <%= dashboard_action_update_access %>
-              </a></li>
+            <% dashboardActions.forEach(function(actionLabel) { %>
+              <li class="mrgn-bttm-md">
+                <a class="btn btn-primary" href="#">
+                  <%= actionLabel %>
+                </a>
+              </li>
+            <% }) %>
           </ul>
         </nav>
         <div class="mrgn-tp-xl">
