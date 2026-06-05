@@ -5,6 +5,7 @@ import expressSession from 'express-session';
 import passport from 'passport';
 import { authExtraParameters, oidc_clients, pageClientConfig, sessionSecret, ui_config } from '../config';
 import { locales_en, locales_fr } from './locales/translations';
+import { SupportedLocale } from './locales/portalBranding';
 
 import { OpenIDConnectStrategy } from './strategy';
 
@@ -454,6 +455,53 @@ function getObjectKeys(source: unknown): string[] {
   return Object.keys(source).sort();
 }
 
+function getStringClaim(source: unknown, key: string): string | undefined {
+  if (!isRecord(source)) {
+    return undefined;
+  }
+
+  const value = source[key];
+  if (typeof value !== 'string') {
+    return undefined;
+  }
+
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed : undefined;
+}
+
+function getDisplayNameFromSource(source: unknown): string | undefined {
+  const fullName = getStringClaim(source, 'name');
+  if (fullName) {
+    return fullName;
+  }
+
+  const givenName = getStringClaim(source, 'given_name');
+  const familyName = getStringClaim(source, 'family_name');
+  const combinedName = [givenName, familyName].filter(Boolean).join(' ');
+  if (combinedName) {
+    return combinedName;
+  }
+
+  return (
+    getStringClaim(source, 'preferred_username') ||
+    getStringClaim(source, 'email') ||
+    getStringClaim(source, 'sub')
+  );
+}
+
+function getDashboardDisplayName(req: RequestWithUserSession): string | undefined {
+  return (
+    getDisplayNameFromSource(req.session && req.session.userinfo) ||
+    getDisplayNameFromSource(getSessionTokenClaims(req)) ||
+    getDisplayNameFromSource(req.user)
+  );
+}
+
+function getDashboardHeading(lang: SupportedLocale, displayName?: string): string {
+  const prefix = lang === 'fr' ? 'Bienvenue' : 'Welcome';
+  return displayName ? `${prefix}, ${displayName}` : prefix;
+}
+
 function readTokenClaims(tokenSet: any) {
   if (!tokenSet || typeof tokenSet.claims !== 'function') {
     return undefined;
@@ -775,6 +823,7 @@ export class ServerExpress {
         case 'dashboard':
           data = {
             ...data,
+            dashboard_heading: getDashboardHeading(req.params.lang as SupportedLocale, getDashboardDisplayName(req)),
             manageProfileLink: getManageProfileLink(req.params.lang)
           }
           res.render('dashboard', data)
