@@ -1,5 +1,28 @@
 # Changelog
 
+## [1.3.5](https://github.com/cds-snc/canadalogin-migration-oidc-rp-simulator/compare/v1.3.4...v1.3.5) (2026-06-05)
+
+
+### Bug Fixes
+
+* patch qs override to 6.15.2 to resolve dependabot alerts ([e194303](https://github.com/cds-snc/canadalogin-migration-oidc-rp-simulator/commit/e1943037a74c2fac8eca2964502ce073f0c9920c))
+* patch qs override to 6.15.2 to resolve dependabot alerts ([b262190](https://github.com/cds-snc/canadalogin-migration-oidc-rp-simulator/commit/b262190803c32ad1107c93ce9b2cdd67b0cd3192))
+* **text:** updated to text/branding to test secure portal ([#78](https://github.com/cds-snc/canadalogin-migration-oidc-rp-simulator/issues/78)) ([a003c7b](https://github.com/cds-snc/canadalogin-migration-oidc-rp-simulator/commit/a003c7b8ee65883e1d090ae81b12acdeb9a61007))
+
+
+### Miscellaneous Chores
+
+* add LICENSE and SECURITY.md ([ec84171](https://github.com/cds-snc/canadalogin-migration-oidc-rp-simulator/commit/ec84171d5e1c0b84cf1fa8f41c1ee07337feec33))
+* add LICENSE and SECURITY.md ([39ec384](https://github.com/cds-snc/canadalogin-migration-oidc-rp-simulator/commit/39ec384ccbc633b9d0592a09d88a1df0c199ddfa))
+* **deps:** bump mermaid ([6ebe66d](https://github.com/cds-snc/canadalogin-migration-oidc-rp-simulator/commit/6ebe66d4eef6bf7d1163de667235639bb1e22d51))
+* **deps:** bump mermaid from 11.12.2 to 11.15.0 in /multi-rp-simulator in the npm_and_yarn group across 1 directory ([06d07ba](https://github.com/cds-snc/canadalogin-migration-oidc-rp-simulator/commit/06d07bab3ed5dbdb61fbd4b4632b2758ce1c7299))
+* **deps:** bump qs ([53324cb](https://github.com/cds-snc/canadalogin-migration-oidc-rp-simulator/commit/53324cbee565c92daa6ca31ea7bb59398abd5339))
+* **deps:** bump qs from 6.14.1 to 6.15.2 in /multi-rp-simulator in the npm_and_yarn group across 1 directory ([6238991](https://github.com/cds-snc/canadalogin-migration-oidc-rp-simulator/commit/62389916203865eb655f269dd61801fb103cc4d3))
+* **deps:** bump the npm_and_yarn group across 1 directory with 6 updates ([a4bd99b](https://github.com/cds-snc/canadalogin-migration-oidc-rp-simulator/commit/a4bd99ba5376f0a1ce7f192f57f2dda134b44cbd))
+* **deps:** bump the npm_and_yarn group across 1 directory with 6 updates ([cf614b8](https://github.com/cds-snc/canadalogin-migration-oidc-rp-simulator/commit/cf614b887e3800615aa900bd67b7f576baa334fb))
+* **deps:** bump uuid ([2f85569](https://github.com/cds-snc/canadalogin-migration-oidc-rp-simulator/commit/2f855692b71bf3b2d22b2f78abfabf9bf6053bc7))
+* **deps:** bump uuid from 11.1.0 to 14.0.0 in /multi-rp-simulator in the npm_and_yarn group across 1 directory ([3081ad6](https://github.com/cds-snc/canadalogin-migration-oidc-rp-simulator/commit/3081ad6e125ed26ba27f5419b82b0a078e5ad03c))
+
 ## [1.3.4](https://github.com/cds-snc/gc-signin-migration-oidc-rp-simulator/compare/v1.3.3...v1.3.4) (2026-05-08)
 
 
