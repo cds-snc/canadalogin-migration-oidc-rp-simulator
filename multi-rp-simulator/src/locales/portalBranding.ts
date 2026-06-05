@@ -6,8 +6,8 @@ const portalBranding = {
     accountDescription: 'Your Test Secure Portal account lets regulated entities submit legislative and supervisory reporting requirements.'
   },
   fr: {
-    name: 'Test Secure Portal',
-    accountDescription: 'Votre compte Test Secure Portal permet aux entités réglementées de soumettre leurs exigences de production de rapports législatifs et de surveillance.'
+    name: 'Portail sécurisé de test',
+    accountDescription: 'Votre compte du Portail sécurisé de test permet aux entités réglementées de soumettre leurs exigences de production de rapports législatifs et de surveillance.'
   }
 };
 
