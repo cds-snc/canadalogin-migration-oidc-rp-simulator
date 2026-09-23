@@ -14,8 +14,9 @@ const clients = [1, 2, 3, 4, 5, 6, 7, 8];
 const childProcesses = new Set();
 
 function attributes(source) {
+  const entities = { amp: '&', '#34': '"', '#39': "'" };
   return Object.fromEntries(Array.from(source.matchAll(/([\w-]+)="([^"]*)"/g), ([, name, value]) => [
-    name, value.replace(/&amp;/g, '&').replace(/&#34;/g, '"').replace(/&#39;/g, "'")
+    name, value.replace(/&(amp|#34|#39);/g, (_, entity) => entities[entity])
   ]));
 }
 
@@ -188,6 +189,11 @@ async function withSimulator(mockUrl, configuredClients, overrides, check) {
 }
 
 async function main() {
+  assert.deepEqual(attributes('plain="&amp; &#34; &#39;" nested="&amp;#34; &amp;#39; &amp;amp;"'), {
+    plain: '& " \'',
+    nested: '&#34; &#39; &amp;'
+  }, 'Attribute entities must be decoded exactly once');
+
   const unexpectedRequests = [];
   const mock = http.createServer((req, res) => {
     const match = req.url.match(/^\/(client[1-8])\/oauth2\/\.well-known\/openid-configuration$/);
