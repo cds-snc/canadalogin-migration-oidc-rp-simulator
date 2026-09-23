@@ -17,27 +17,52 @@
     <div class="row mrgn-tp-lg">
       <div class="col-md-6">
         <div class="well well-sm brdr-rds-0">
-          <h2 class="h4 mrgn-tp-0"><%= flow_all_heading %></h2>
-          <p><%= flow_all_desc %></p>
+          <h2 class="h4 mrgn-tp-0"><%= testing_all_heading %></h2>
+          <p><%= testing_all_desc %></p>
+          <% if (!flowAllPageLink) { %><p><%= testing_unavailable %></p><% } %>
           <p class="mrgn-tp-md">
+            <% if (flowAllPageLink) { %>
             <a class="btn btn-primary btn-lg btn-block p-sm-3 mya" href="<%= flowAllPageLink %>">
-              <span class="h4"><%= open_flow_page_label %></span>
+              <span class="h4"><%= testing_open_all %></span>
             </a>
+            <% } else { %>
+            <button class="btn btn-primary btn-lg btn-block" disabled><%= testing_open_all %></button>
+            <% } %>
           </p>
         </div>
       </div>
       <div class="col-md-6">
         <div class="well well-sm brdr-rds-0">
-          <h2 class="h4 mrgn-tp-0"><%= flow_no_interac_heading %></h2>
-          <p><%= flow_no_interac_desc %></p>
+          <h2 class="h4 mrgn-tp-0"><%= testing_gckey_heading %></h2>
+          <p><%= testing_gckey_desc %></p>
+          <% if (!flowNoInteracPageLink) { %><p><%= testing_unavailable %></p><% } %>
           <p class="mrgn-tp-md">
+            <% if (flowNoInteracPageLink) { %>
             <a class="btn btn-primary btn-lg btn-block p-sm-3 mya" href="<%= flowNoInteracPageLink %>">
-              <span class="h4"><%= open_flow_page_label %></span>
+              <span class="h4"><%= testing_open_gckey %></span>
             </a>
+            <% } else { %>
+            <button class="btn btn-primary btn-lg btn-block" disabled><%= testing_open_gckey %></button>
+            <% } %>
           </p>
         </div>
       </div>
     </div>
+
+    <% if (showDirectGccf) { %>
+    <section class="panel panel-default">
+      <div class="panel-body">
+        <h2 class="h4 mrgn-tp-0"><%= testing_direct_gccf_heading %></h2>
+        <p><%= testing_direct_gccf_description %></p>
+        <% if (directGccfLink) { %>
+        <a class="btn btn-default" href="<%= directGccfLink %>" onclick="submitWithQueryString(this)"><%= testing_direct_gccf_button %></a>
+        <% } else { %>
+        <p><%= testing_unavailable %></p>
+        <button class="btn btn-default" disabled><%= testing_direct_gccf_button %></button>
+        <% } %>
+      </div>
+    </section>
+    <% } %>
 
     <div class="row">
       <div class="col-md-12">
@@ -55,6 +80,7 @@
       </div>
     </div>
 
+    <p><a href="<%= home_link %>"><%= testing_back %></a></p>
     <%- include('preFooter')-%>
   </main>
   <%- include('footer')-%>

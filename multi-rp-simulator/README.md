@@ -19,16 +19,33 @@ Local (Docker):
 
 `npm test` to run e2e tests.
 
+`npm run test:flows` checks the SIC/GCCF starting pages, client routing, language switching, and authorization redirects against a local mock provider. It uses isolated test settings and does not read your `.env` or contact live providers.
+
 See the complementary project at https://github.com/sign-in-canada/oidc-provider
 
+The starting page at `/` (or `/rpsim/testflows/en`) lets testers choose SIC, GCCF, or the manual client picker. Dedicated GCKey and Interac testing are shown as planned options. All pages are also available in French by replacing `/en` with `/fr`.
+
+- SIC: `/rpsim/sic/en` offers GCKey + Interac and GCKey-only migration flows.
+- GCCF: `/rpsim/gccf/en` offers the same two migration flows through IBM test, plus a direct GCCF sign-in test.
+- Manual clients: `/rpsim/login/en` retains request parameters and individual client selection.
+
 By default, sign-in test flow pages use these clients:
+
 - `/rpsim/flow-all/*` uses `client1`
 - `/rpsim/flow-no-interac/*` uses `client2`
+- `/rpsim/gccf-flow-all/*` uses `client7`
+- `/rpsim/gccf-flow-no-interac/*` uses `client8`
+- The direct GCCF action uses `client6`.
+
+The existing SIC flow URLs and `/rpsim/FCACHomePage/*` selector remain available. Unconfigured flow clients disable the relevant actions instead of falling back to another client. A non-empty provider URL enables a client; this does not validate its credentials or guarantee provider availability.
 
 Optional page-level overrides are available in `.env` when you need a dedicated UX/testing client:
 - `FLOW_ALL_CLIENT`
 - `FLOW_NO_INTERAC_CLIENT`
 - `LOGIN_MIGRATION_REGISTER_CLIENT`
+- `GCCF_FLOW_ALL_CLIENT`
+- `GCCF_FLOW_NO_INTERAC_CLIENT`
+- `GCCF_DIRECT_CLIENT`
 
 Client allocation (provider settings come from `.env` locally or the deployment environment):
 
@@ -39,9 +56,9 @@ Client allocation (provider settings come from `.env` locally or the deployment 
 | `client3` | GC SIC Migration with skip migration enabled | Login migration registration |
 | `client4` | SIC without IBM Verify | General simulator login |
 | `client5` | UX / passkey testing | General simulator login |
-| `client6` | Direct GCCF connection | General simulator login |
-| `client7` | GCCF RP simulator in IBM test - 1 | General simulator login |
-| `client8` | GCCF RP simulator in IBM test - 2 | General simulator login |
+| `client6` | Direct GCCF connection | Direct action on `/rpsim/gccf/*` |
+| `client7` | GCCF RP simulator in IBM test - GCKey + Interac | `/rpsim/gccf-flow-all/*` |
+| `client8` | GCCF RP simulator in IBM test - GCKey only | `/rpsim/gccf-flow-no-interac/*` |
 
 Only clients with a non-empty `CLIENTn_URL` are loaded. The new `client6`–`client8` entries stay inactive until configured and appear on `/rpsim/login/en` and `/rpsim/login/fr` once enabled.
 

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+
+<html lang="<%= lang %>">
+<%- include('head', { title_h: testing_start_title })-%>
+
+<body vocab="http://schema.org/" typeof="WebPage" class="page-home">
+	<%- include('header', { loginMigrationLoginLink, signInMenuLink })-%>
+	<main property="mainContentOfPage" class="container testing-start-page">
+		<h1 property="name" id="wb-cont"><%= testing_start_title %></h1>
+		<p><%= testing_start_intro %></p>
+
+		<div class="testing-start-grid mrgn-tp-lg">
+			<section class="panel panel-default" aria-labelledby="testing-sic-heading">
+				<div class="panel-body">
+					<h2 id="testing-sic-heading" class="h3 mrgn-tp-0"><%= testing_sic_title %></h2>
+					<p><%= testing_sic_description %></p>
+					<p class="testing-start-action"><a class="btn btn-primary" href="<%= sicTestingLink %>"><%= testing_sic_button %></a></p>
+				</div>
+			</section>
+			<section class="panel panel-default" aria-labelledby="testing-gccf-heading">
+				<div class="panel-body">
+					<h2 id="testing-gccf-heading" class="h3 mrgn-tp-0"><%= testing_gccf_title %></h2>
+					<p><%= testing_gccf_description %></p>
+					<p class="testing-start-action"><a class="btn btn-primary" href="<%= gccfTestingLink %>"><%= testing_gccf_button %></a></p>
+				</div>
+			</section>
+			<section class="panel panel-default" aria-labelledby="testing-gckey-heading">
+				<div class="panel-body">
+					<h2 id="testing-gckey-heading" class="h3 mrgn-tp-0"><%= testing_gckey_title %></h2>
+					<p><%= testing_gckey_description %></p>
+					<p class="testing-start-action"><strong><%= testing_planned %></strong></p>
+				</div>
+			</section>
+			<section class="panel panel-default" aria-labelledby="testing-interac-heading">
+				<div class="panel-body">
+					<h2 id="testing-interac-heading" class="h3 mrgn-tp-0"><%= testing_interac_title %></h2>
+					<p><%= testing_interac_description %></p>
+					<p class="testing-start-action"><strong><%= testing_planned %></strong></p>
+				</div>
+			</section>
+		</div>
+
+		<section class="well mrgn-tp-lg" aria-labelledby="testing-manual-heading">
+			<h2 id="testing-manual-heading" class="h3 mrgn-tp-0"><%= manual_client_selection_heading %></h2>
+			<p><%= manual_client_selection_desc %></p>
+			<p class="mrgn-bttm-0"><a class="btn btn-default" href="<%= manualClientSelectionLink %>"><%= manual_client_selection_button %></a></p>
+		</section>
+
+		<%- include('preFooter')-%>
+	</main>
+	<%- include('footer')-%>
+
+	<style>
+		.testing-start-grid {
+			display: grid;
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+			gap: 2rem;
+		}
+
+		.testing-start-grid .panel {
+			margin-bottom: 0;
+		}
+
+		.testing-start-grid .panel-body {
+			display: flex;
+			flex-direction: column;
+			height: 100%;
+			padding: 2rem;
+		}
+
+		.testing-start-grid .testing-start-action {
+			margin-top: auto;
+			margin-bottom: 0;
+			padding-top: 1rem;
+		}
+
+		.testing-start-page .btn {
+			white-space: normal;
+		}
+
+		@media (max-width: 767px) {
+			.testing-start-grid {
+				grid-template-columns: minmax(0, 1fr);
+			}
+		}
+	</style>
+</body>
+</html>
