@@ -108,6 +108,7 @@ dist
 
 # simulator build output
 multi-rp-simulator/build/
+multi-rp-simulator/.local/
 
 # Codex local metadata
 .codex/

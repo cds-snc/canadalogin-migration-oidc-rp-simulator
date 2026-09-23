@@ -3,7 +3,7 @@ import createError from 'http-errors';
 import { Issuer } from 'openid-client';
 import expressSession from 'express-session';
 import passport from 'passport';
-import { authExtraParameters, oidc_clients, pageClientConfig, sessionSecret, ui_config } from '../config';
+import { authExtraParameters, oidc_clients, pageClientConfig, privateJwtClientPublicJwks, sessionSecret, ui_config } from '../config';
 import { locales_en, locales_fr } from './locales/translations';
 
 import { OpenIDConnectStrategy } from './strategy';
@@ -633,6 +633,15 @@ export class ServerExpress {
 
     app.get('/health', (req, res) => res.status(200).send('OK'));
 
+    app.get('/.well-known/jwks.json', (req, res) => {
+      if (!privateJwtClientPublicJwks?.jwks) {
+        return res.status(404).json({ error: 'private_key_jwt client is not configured' });
+      }
+
+      res.set('Cache-Control', 'no-store');
+      return res.type('application/jwk-set+json').status(200).json(privateJwtClientPublicJwks.jwks);
+    });
+
     // Sector Identifier URI endpoint (used for OIDC pairwise subject identifier calculations).
     // Returns a JSON array of redirect URIs for the sector.
     // Configure as a full list via SECTOR_REDIRECT_URIS in .env.
@@ -1174,9 +1183,13 @@ async function registerStrategy(cli, params) {
     console.log(`[oidc] register client config: ${cli.name}`, {
       client_id: cli.config?.client_id,
       redirect_uris: cli.config?.redirect_uris,
-      token_endpoint_auth_method: cli.config?.token_endpoint_auth_method
+      token_endpoint_auth_method: cli.config?.token_endpoint_auth_method,
+      token_endpoint_auth_signing_alg: cli.config?.token_endpoint_auth_signing_alg,
+      private_jwks_kids: cli.privateJwks?.keys?.map((key) => key.kid).filter(Boolean)
     });
-    const client = new issuer.Client(cli.config);
+    const client = cli.privateJwks
+      ? new issuer.Client(cli.config, cli.privateJwks)
+      : new issuer.Client(cli.config);
     passport.use(
       cli.name,
       new OpenIDConnectStrategy({ client, params, passReqToCallback: true, extraAuthorizationParams: authExtraParameters }, (req, tokenSet, userinfo, done) => {
