@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.3.6](https://github.com/cds-snc/canadalogin-migration-oidc-rp-simulator/compare/v1.3.5...v1.3.6) (2026-09-24)
+
+
+### Bug Fixes
+
+* **clients:** add direct GCCF and IBM test client slots ([#89](https://github.com/cds-snc/canadalogin-migration-oidc-rp-simulator/issues/89)) ([9384898](https://github.com/cds-snc/canadalogin-migration-oidc-rp-simulator/commit/93848985887896d34f9e8e478be5f6924dfe4c7e))
+
+
+### Miscellaneous Chores
+
+* Configure Renovate ([84bfbb9](https://github.com/cds-snc/canadalogin-migration-oidc-rp-simulator/commit/84bfbb984fc082777e2ed71bbd6181eefda1999c))
+* **deps:** add renovate.json ([19ebe69](https://github.com/cds-snc/canadalogin-migration-oidc-rp-simulator/commit/19ebe6992902d637b6bb991c987d8559d47d0150))
+* **deps:** bump the npm_and_yarn group across 1 directory with 2 updates ([273f835](https://github.com/cds-snc/canadalogin-migration-oidc-rp-simulator/commit/273f835ad903bf0cfbf82a549a18d1baa5c82390))
+* **deps:** bump the npm_and_yarn group across 1 directory with 2 updates ([1ad24d9](https://github.com/cds-snc/canadalogin-migration-oidc-rp-simulator/commit/1ad24d9195c7fc5405a2029ac5c8b63e91ea4157))
+
 ## [1.3.5](https://github.com/cds-snc/canadalogin-migration-oidc-rp-simulator/compare/v1.3.4...v1.3.5) (2026-06-05)
 
 
