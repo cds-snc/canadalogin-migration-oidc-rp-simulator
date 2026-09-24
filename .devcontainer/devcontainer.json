@@ -2,7 +2,7 @@
 // README at: https://github.com/devcontainers/templates/tree/main/src/typescript-node
 {
 	"name": "RP Sim Dev Container",
-	"image": "mcr.microsoft.com/devcontainers/go:bookworm",
+	"image": "mcr.microsoft.com/devcontainers/go:bookworm@sha256:adc326255c019241228f9da4a1cb5d6a89abaaa0eb8d926a355b00af7daafd00",
 	"features": {
 		"ghcr.io/devcontainers/features/node:1": {
 			"version": "lts",
