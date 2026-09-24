@@ -6,6 +6,7 @@ import passport from 'passport';
 import { authExtraParameters, oidc_clients, pageClientConfig, sessionSecret, ui_config } from '../config';
 import { locales_en, locales_fr } from './locales/translations';
 import { SupportedLocale } from './locales/portalBranding';
+import { getTestingCopy } from './locales/testing';
 
 import { OpenIDConnectStrategy } from './strategy';
 
@@ -199,15 +200,17 @@ function resolveConfiguredClientByName(name: string, context = 'configured'): Oi
     return configuredClient;
   }
 
-  console.warn(`[config] ${context} client "${normalizedName}" is not configured. Falling back.`);
+  console.warn(`[config] ${context} client "${normalizedName}" is not configured.`);
   return undefined;
 }
 
-function getSignInFlowClients(flow: SignInFlow) {
-  const flowClientName = flow === 'no-interac'
+function getSignInFlowClients(flow: SignInFlow, isGccf = false) {
+  const flowClientName = isGccf
+    ? (flow === 'no-interac' ? pageClientConfig.gccfFlowNoInteracClient : pageClientConfig.gccfFlowAllClient)
+    : flow === 'no-interac'
     ? pageClientConfig.flowNoInteracClient
     : pageClientConfig.flowAllClient;
-  const flowClient = resolveConfiguredClientByName(flowClientName, 'flow') || oidc_clients[0];
+  const flowClient = resolveConfiguredClientByName(flowClientName, 'flow');
 
   return {
     registerClient: flowClient,
@@ -718,23 +721,30 @@ export class ServerExpress {
 
       let data = {
         ...template,
+        ...getTestingCopy(req.params.lang as SupportedLocale),
         page: req.params.page,
         ui_config: ui_config,
         isLoggedIn: req.user != undefined
       }
+      const isGccf = ['gccf', 'gccf-flow-all', 'gccf-flow-no-interac', 'gccf-signinpage'].includes(req.params.page);
+      const flowPrefix = isGccf ? 'gccf-' : '';
       const queryFlow = parseSignInFlow(req.query.flow);
-      const signInFlow: SignInFlow = req.params.page === 'flow-no-interac'
+      const signInFlow: SignInFlow = ['flow-no-interac', 'gccf-flow-no-interac'].includes(req.params.page)
         ? 'no-interac'
-        : req.params.page === 'flow-all'
+        : ['flow-all', 'gccf-flow-all'].includes(req.params.page)
           ? 'all'
           : queryFlow;
-      const flowClients = getSignInFlowClients(signInFlow);
+      const flowClients = getSignInFlowClients(signInFlow, isGccf);
       const loginMigrationLoginLink = getLoginMigrationLink(req.params.lang) || `/rpsim/loginMigration/${req.params.lang}`;
       const signInMenuLink = getSignInMenuLink(req.params.page, req.params.lang, signInFlow, loginMigrationLoginLink);
       data = {
         ...data,
         loginMigrationLoginLink: loginMigrationLoginLink,
         signInMenuLink: signInMenuLink,
+        language_link: `/rpsim/${req.params.page}/${template.other_lang}`
+          + (['signinpage', 'gccf-signinpage'].includes(req.params.page) ? `?flow=${signInFlow}` : ''),
+        testingSectionLink: `/rpsim/${isGccf ? 'gccf' : 'sic'}/${req.params.lang}`,
+        testingSectionTitle: isGccf ? data.testing_gccf_title : data.testing_sic_title,
         helpContentLink: getHelpContentLink(req.params.lang)
       }
       console.log("========= rpsim endpoint ====== ")
@@ -765,18 +775,39 @@ export class ServerExpress {
           res.render('loginMigration', data)
           break;
         }
-        case 'FCACHomePage':
         case 'testflows':
+          res.render('testStart', {
+            ...data,
+            title_h: data.testing_start_title,
+            appbar_rp_heading: data.content_title,
+            sicTestingLink: `/rpsim/sic/${req.params.lang}`,
+            gccfTestingLink: `/rpsim/gccf/${req.params.lang}`,
+            manualClientSelectionLink: `/rpsim/login/${req.params.lang}`
+          });
+          break;
+        case 'FCACHomePage':
+        case 'sic':
+        case 'gccf': {
+          const allClient = getSignInFlowClients('all', isGccf).registerClient;
+          const noInteracClient = getSignInFlowClients('no-interac', isGccf).registerClient;
+          const directClient = isGccf
+            ? resolveConfiguredClientByName(pageClientConfig.gccfDirectClient, 'direct GCCF')
+            : undefined;
           data = {
             ...data,
-            signInPageLink: getSignInPageLink(req.params.lang),
-            oidc_clients: oidc_clients.map((item) => { return { name: item.name, description: item.description, sic: item.sic } }),
-            flowAllPageLink: `/rpsim/flow-all/${req.params.lang}`,
-            flowNoInteracPageLink: `/rpsim/flow-no-interac/${req.params.lang}`,
+            title_h: isGccf ? data.testing_gccf_title : data.testing_sic_title,
+            appbar_rp_heading: data.content_title,
+            testflows_title: isGccf ? data.testing_gccf_title : data.testing_sic_title,
+            testflows_intro: isGccf ? data.testing_gccf_intro : data.testing_sic_intro,
+            flowAllPageLink: allClient ? `/rpsim/${flowPrefix}flow-all/${req.params.lang}` : undefined,
+            flowNoInteracPageLink: noInteracClient ? `/rpsim/${flowPrefix}flow-no-interac/${req.params.lang}` : undefined,
+            showDirectGccf: isGccf,
+            directGccfLink: directClient ? `/auth/${directClient.name}/${req.params.lang}` : undefined,
             manualClientSelectionLink: `/rpsim/login/${req.params.lang}`
           }
           res.render('FCACHomePage', data)
           break;
+        }
         case 'flow-all-home':
           res.redirect(`/rpsim/flow-all/${req.params.lang}`);
           break;
@@ -784,20 +815,24 @@ export class ServerExpress {
           res.redirect(`/rpsim/flow-no-interac/${req.params.lang}`);
           break;
         case 'flow-all':
-        case 'flow-no-interac': {
-          const flowFromPage: SignInFlow = req.params.page === 'flow-no-interac' ? 'no-interac' : 'all';
+        case 'flow-no-interac':
+        case 'gccf-flow-all':
+        case 'gccf-flow-no-interac': {
           data = {
             ...data,
-            signInPageLink: `/rpsim/signinpage/${req.params.lang}?flow=${flowFromPage}`,
+            signInPageLink: flowClients.gcSigninClient
+              ? `/rpsim/${flowPrefix}signinpage/${req.params.lang}?flow=${signInFlow}`
+              : undefined,
             oidc_clients: oidc_clients.map((item) => { return { name: item.name, description: item.description, sic: item.sic } }),
             registerLink: flowClients.registerClient
-              ? `/auth/${flowClients.registerClient.name}/${req.params.lang}?flow=${flowFromPage}&skipmigration=true`
+              ? `/auth/${flowClients.registerClient.name}/${req.params.lang}?flow=${signInFlow}&skipmigration=true`
               : undefined
           }
           res.render('flowSignRegister', data)
           break;
         }
         case 'signinpage':
+        case 'gccf-signinpage':
           data = {
             ...data,
             signInPageLink: getSignInPageLink(req.params.lang),

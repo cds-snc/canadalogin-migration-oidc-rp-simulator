@@ -1,0 +1,62 @@
+const testingCopy = {
+  en: {
+    testing_start_title: 'What would you like to test?',
+    testing_start_intro: 'Choose a sign-in service to explore its test flows.',
+    testing_sic_title: 'Test SIC',
+    testing_sic_description: 'Test the Sign In Canada migration flow with CanadaLogin.',
+    testing_sic_button: 'Choose an SIC test',
+    testing_sic_intro: 'Choose the sign-in options offered by the service you want to test.',
+    testing_gccf_title: 'Test GCCF',
+    testing_gccf_description: 'Test GCCF directly or through a relying party simulator.',
+    testing_gccf_button: 'Choose a GCCF test',
+    testing_gccf_intro: 'Choose a relying party test flow or connect directly to GCCF.',
+    testing_gckey_title: 'Test GCKey',
+    testing_gckey_description: 'Dedicated GCKey test flows will be available here.',
+    testing_interac_title: 'Test Interac',
+    testing_interac_description: 'Dedicated Interac test flows will be available here.',
+    testing_planned: 'Planned',
+    testing_all_heading: 'GCKey + Interac',
+    testing_all_desc: 'Test a service that offers both GCKey and Interac sign-in.',
+    testing_gckey_heading: 'GCKey only',
+    testing_gckey_desc: 'Test a service that offers GCKey sign-in only.',
+    testing_open_all: 'Open the GCKey + Interac test',
+    testing_open_gckey: 'Open the GCKey-only test',
+    testing_unavailable: 'This test is not configured in this environment.',
+    testing_back: 'Choose another test',
+    testing_direct_gccf_heading: 'Connect directly to GCCF',
+    testing_direct_gccf_description: 'Start a sign-in request directly with GCCF.',
+    testing_direct_gccf_button: 'Sign in with GCCF'
+  },
+  fr: {
+    testing_start_title: 'Que souhaitez-vous tester?',
+    testing_start_intro: 'Choisissez un service de connexion pour explorer ses parcours de test.',
+    testing_sic_title: 'Tester SIC',
+    testing_sic_description: 'Testez le parcours de migration d’Authenti-Canada avec ConnexionCanada.',
+    testing_sic_button: 'Choisir un test SIC',
+    testing_sic_intro: 'Choisissez les options de connexion offertes par le service à tester.',
+    testing_gccf_title: 'Tester GCCF',
+    testing_gccf_description: 'Testez GCCF directement ou au moyen d’un simulateur de partie utilisatrice.',
+    testing_gccf_button: 'Choisir un test GCCF',
+    testing_gccf_intro: 'Choisissez un parcours de test de partie utilisatrice ou connectez-vous directement à GCCF.',
+    testing_gckey_title: 'Tester CléGC',
+    testing_gckey_description: 'Des parcours de test propres à CléGC seront proposés ici.',
+    testing_interac_title: 'Tester Interac',
+    testing_interac_description: 'Des parcours de test propres à Interac seront proposés ici.',
+    testing_planned: 'À venir',
+    testing_all_heading: 'CléGC + Interac',
+    testing_all_desc: 'Testez un service qui offre la connexion avec CléGC et Interac.',
+    testing_gckey_heading: 'CléGC seulement',
+    testing_gckey_desc: 'Testez un service qui offre la connexion avec CléGC seulement.',
+    testing_open_all: 'Ouvrir le test CléGC + Interac',
+    testing_open_gckey: 'Ouvrir le test CléGC seulement',
+    testing_unavailable: 'Ce test n’est pas configuré dans cet environnement.',
+    testing_back: 'Choisir un autre test',
+    testing_direct_gccf_heading: 'Se connecter directement à GCCF',
+    testing_direct_gccf_description: 'Lancez une demande de connexion directement auprès de GCCF.',
+    testing_direct_gccf_button: 'Se connecter avec GCCF'
+  }
+};
+
+export function getTestingCopy(lang: 'en' | 'fr') {
+  return testingCopy[lang];
+}

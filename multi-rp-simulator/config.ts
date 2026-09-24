@@ -115,11 +115,20 @@
 
   const client5 = createClient(5);
 
-  export const oidc_clients = [client1, client2, client3, client4, client5].filter((client) => hasConfiguredValue(client.ap));
+  const client6 = createClient(6);
+
+  const client7 = createClient(7);
+
+  const client8 = createClient(8);
+
+  export const oidc_clients = [client1, client2, client3, client4, client5, client6, client7, client8].filter((client) => hasConfiguredValue(client.ap));
 
   export const pageClientConfig = {
     flowAllClient: env('FLOW_ALL_CLIENT', 'client1'),
     flowNoInteracClient: env('FLOW_NO_INTERAC_CLIENT', 'client2'),
+    gccfFlowAllClient: env('GCCF_FLOW_ALL_CLIENT', 'client7'),
+    gccfFlowNoInteracClient: env('GCCF_FLOW_NO_INTERAC_CLIENT', 'client8'),
+    gccfDirectClient: env('GCCF_DIRECT_CLIENT', 'client6'),
     loginMigrationRegisterClient: env('LOGIN_MIGRATION_REGISTER_CLIENT', 'client3')
   };
 

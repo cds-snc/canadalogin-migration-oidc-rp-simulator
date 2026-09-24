@@ -10,6 +10,7 @@
     "start:prod": "node build/src/rp-server.js",
     "nodemon": "nodemon --watch \"src/**\" --ext \"ts,json\"  --exec \"ts-node src/rp-server.ts\"",
     "test": "haibun-cli test",
+    "test:flows": "node scripts/test-flows.js",
     "tsc-watch": "tsc --watch",
     "test-firefox": "HAIBUN_SPLIT_SHARED=a-browser=firefox haibun-cli test",
     "test-many": "HAIBUN_SPLIT_SHARED='a-browser=chromium,webkit,firefox,chromium.iPhone 6,chromium.iPad (gen 7) landscape,chromium.iPad Mini,chromium.Pixel 5,chromium.iPhone X landscape,chromium.Kindle Fire HDX,chromium.Moto G4 landscape' haibun-cli test"
