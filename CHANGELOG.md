@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.1](https://github.com/cds-snc/canadalogin-migration-oidc-rp-simulator/compare/v1.4.0...v1.4.1) (2026-10-14)
+
+
+### Continuous Integration
+
+* Update version to 1.4.0 in staging.json ([349a02e](https://github.com/cds-snc/canadalogin-migration-oidc-rp-simulator/commit/349a02e7cd3a15faae7e4e2554248ffc938e7e87))
+* Update version to 1.4.0 in staging.json ([3bed265](https://github.com/cds-snc/canadalogin-migration-oidc-rp-simulator/commit/3bed2655002af1246a53d10209ba44cd493dc688))
+
 ## [1.4.0](https://github.com/cds-snc/canadalogin-migration-oidc-rp-simulator/compare/v1.3.5...v1.4.0) (2026-10-14)
 
 
