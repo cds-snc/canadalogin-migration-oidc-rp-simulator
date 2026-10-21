@@ -1,5 +1,32 @@
 # Changelog
 
+## [1.4.1](https://github.com/cds-snc/canadalogin-migration-oidc-rp-simulator/compare/v1.4.0...v1.4.1) (2026-10-21)
+
+
+### Bug Fixes
+
+* Fix deployment lockfile mismatch ([9720fc3](https://github.com/cds-snc/canadalogin-migration-oidc-rp-simulator/commit/9720fc3afb1e3b467895381f0a49676202a7ebe6))
+* **oidc:** support explicit GCCF discovery URLs ([#94](https://github.com/cds-snc/canadalogin-migration-oidc-rp-simulator/issues/94)) ([07c1e51](https://github.com/cds-snc/canadalogin-migration-oidc-rp-simulator/commit/07c1e5160006eca8b168a4d2d29b339c4554dadd))
+* synchronize simulator package lockfile ([de43a72](https://github.com/cds-snc/canadalogin-migration-oidc-rp-simulator/commit/de43a724d92a255107054a809d0b7691643c2d39))
+
+
+### Miscellaneous Chores
+
+* **deps:** pin mcr.microsoft.com/devcontainers/go docker tag to dcd81a1 ([684f4c2](https://github.com/cds-snc/canadalogin-migration-oidc-rp-simulator/commit/684f4c2a90c17a5d8e9a73bd4aafc76316de5319))
+* **deps:** pin mcr.microsoft.com/devcontainers/go docker tag to dcd81a1 ([d5ba9d7](https://github.com/cds-snc/canadalogin-migration-oidc-rp-simulator/commit/d5ba9d7997d115c7e636cfb1c361cbaacd08b8fa))
+* **deps:** update all minor dependencies to v3.10.0 ([ee3c4d6](https://github.com/cds-snc/canadalogin-migration-oidc-rp-simulator/commit/ee3c4d616fef2e9def9798d673963e8c1297ff20))
+* **deps:** update all minor dependencies to v3.10.0 ([f0bdfcd](https://github.com/cds-snc/canadalogin-migration-oidc-rp-simulator/commit/f0bdfcd8a35c1030c9955eb150d3b1cc82b7a537))
+* **deps:** update all patch dependencies ([9cc26be](https://github.com/cds-snc/canadalogin-migration-oidc-rp-simulator/commit/9cc26be85489f20ede3687a5c9d2f3662f9ed4ae))
+* **deps:** update all patch dependencies ([a612d94](https://github.com/cds-snc/canadalogin-migration-oidc-rp-simulator/commit/a612d94b1cd8d25cdae119a7f7c3d3c58c30eff6))
+* **deps:** update dependency qs to v6.16.0 [security] ([7ca037e](https://github.com/cds-snc/canadalogin-migration-oidc-rp-simulator/commit/7ca037e85ed1b898d27cf148c0ab55e9fffd8317))
+* **deps:** update dependency qs to v6.16.0 [security] ([04fa2c7](https://github.com/cds-snc/canadalogin-migration-oidc-rp-simulator/commit/04fa2c79f3bb85c4400b5537968206ec07458cd9))
+
+
+### Continuous Integration
+
+* Update version to 1.4.0 in staging.json ([349a02e](https://github.com/cds-snc/canadalogin-migration-oidc-rp-simulator/commit/349a02e7cd3a15faae7e4e2554248ffc938e7e87))
+* Update version to 1.4.0 in staging.json ([3bed265](https://github.com/cds-snc/canadalogin-migration-oidc-rp-simulator/commit/3bed2655002af1246a53d10209ba44cd493dc688))
+
 ## [1.4.0](https://github.com/cds-snc/canadalogin-migration-oidc-rp-simulator/compare/v1.3.5...v1.4.0) (2026-10-14)
 
 
