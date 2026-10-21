@@ -74,8 +74,7 @@ async function startSimulator(mockUrl, configuredClients = clients, overrides = 
     TMPDIR: os.tmpdir(),
     PORT: '0',
     SESSION_SECRET: 'flow-regression-test-session-secret',
-    TS_NODE_PROJECT: path.join(projectRoot, 'tsconfig.json'),
-    ...overrides
+    TS_NODE_PROJECT: path.join(projectRoot, 'tsconfig.json')
   };
   for (const index of configuredClients) {
     const prefix = `CLIENT${index}`;
@@ -85,6 +84,7 @@ async function startSimulator(mockUrl, configuredClients = clients, overrides = 
     env[`${prefix}_REDIRECT_URIS`] = `http://127.0.0.1/auth/callback/client${index}`;
     env[`${prefix}_SKIP`] = 'false';
   }
+  Object.assign(env, overrides);
 
   // The app normally listens on all interfaces. Constrain only this test process,
   // use an OS-assigned port, and report it via IPC without modifying the server.
@@ -195,13 +195,15 @@ async function main() {
   }, 'Attribute entities must be decoded exactly once');
 
   const unexpectedRequests = [];
+  const discoveryRequests = new Set();
   const mock = http.createServer((req, res) => {
-    const match = req.url.match(/^\/(client[1-8])\/oauth2\/\.well-known\/openid-configuration$/);
+    const match = req.url.match(/^\/(client[1-8])\/(?:oauth2|oxauth|auth\/gceab\/oidc\/private)\/\.well-known\/openid-configuration\/?(?:\?tenant=gc&target=one\?two)?$/);
     if (!match) {
       unexpectedRequests.push(req.url);
       res.writeHead(404).end();
       return;
     }
+    discoveryRequests.add(req.url);
     const issuer = `http://127.0.0.1:${mock.address().port}/${match[1]}`;
     res.writeHead(200, { 'content-type': 'application/json' });
     res.end(JSON.stringify({
@@ -293,6 +295,19 @@ async function main() {
       assert.ok(!links(selector).some((link) => link.href.startsWith('/auth/client6/')));
       await checkAuthorization(baseUrl, '/auth/client5/en', 5, 'en');
       console.log('PASS: independent SIC, GCCF and direct GCCF client overrides');
+    });
+
+    await withSimulator(mockUrl, [1, 2, 6, 7], {
+      CLIENT1_URL: `${mockUrl}/client1`,
+      CLIENT2_URL: `${mockUrl}/client2/oxauth/`,
+      CLIENT6_URL: `${mockUrl}/client6/auth/gceab/oidc/private/.well-known/openid-configuration`,
+      CLIENT7_URL: `${mockUrl}/client7/auth/gceab/oidc/private/.well-known/openid-configuration/?tenant=gc&target=one?two`
+    }, async (baseUrl) => {
+      for (const client of [1, 2, 6, 7]) {
+        await checkAuthorization(baseUrl, `/auth/client${client}/en`, client, 'en');
+      }
+      assert.ok(discoveryRequests.has('/client7/auth/gceab/oidc/private/.well-known/openid-configuration/?tenant=gc&target=one?two'), 'Explicit discovery must preserve the trailing slash and full query string');
+      console.log('PASS: explicit GCCF discovery URLs, query strings and legacy provider bases');
     });
     assert.deepEqual(unexpectedRequests, [], 'Tests must only request mock discovery, never authorize/token endpoints');
   } finally {

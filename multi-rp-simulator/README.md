@@ -64,7 +64,9 @@ Only clients with a non-empty `CLIENTn_URL` are loaded. The new `client6`–`cli
 
 To configure each GCCF client, copy its block from `.env.example` into your local `.env` or deployment environment and set its provider URL, registered client ID, secret, and registered callback/logout URLs. Set `CLIENTn_TOKEN_ENDPOINT_AUTH_METHOD` to the method used by that registration; the example uses the app's default, `client_secret_post`. Give the two IBM test registrations distinct descriptions.
 
-`CLIENTn_URL` currently accepts a provider base URL: discovery appends `/oauth2/.well-known/openid-configuration`, or just `/.well-known/openid-configuration` when the base already ends in `/oauth2` or `/oxauth`. Do not put a complete discovery-document URL in this field.
+`CLIENTn_URL` accepts a complete discovery-document URL, which is used unchanged, or a provider base URL. For base URLs, discovery appends `/oauth2/.well-known/openid-configuration`, or just `/.well-known/openid-configuration` when the base already ends in `/oauth2` or `/oxauth`.
+
+For direct GCCF testing, use `CLIENT6_URL=https://te-gc.auth.canada.ca/auth/gceab/oidc/private/.well-known/openid-configuration` once the client ID and secret are configured. Use the full discovery URL because GCCF's issuer path does not follow the legacy `/oauth2` convention. The token authentication method must match the client registration.
 
 Each configured client should use a callback URI that matches its provider route, for example:
 - `client1 -> /auth/callback/client1`

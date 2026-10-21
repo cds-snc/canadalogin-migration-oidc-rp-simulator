@@ -1305,6 +1305,11 @@ function logDiscoveryError(clientName: string, url: string, error: any) {
 }
 
 function buildWellKnownUrl(issuerUrl: string) {
+  // Some providers publish discovery outside the legacy /oauth2 and /oxauth paths.
+  if (/\/\.well-known\/openid-configuration\/?$/.test(new URL(issuerUrl).pathname)) {
+    return issuerUrl;
+  }
+
   const [base, query] = issuerUrl.split('?', 2);
   const trimmedBase = base.endsWith('/') ? base.slice(0, -1) : base;
   const wellKnownPath = trimmedBase.endsWith('/oauth2') || trimmedBase.endsWith('/oxauth') 
