@@ -32,7 +32,7 @@ permissions:
 
 jobs:
   release:
-    uses: cds-snc/canadalogin-release-pipeline/.github/workflows/release__release-pipeline.yml@v2.0.0
+    uses: cds-snc/canadalogin-release-pipeline/.github/workflows/release__release-pipeline.yml@26f5e7a3d500cc7c5ca89ad7ac651072e10c6578 # v2.0.0
     with:
       environment: ${{ inputs.environment || '' }}
       force-redeploy: ${{ inputs.force-redeploy || false }}
