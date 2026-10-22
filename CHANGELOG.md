@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.4.2](https://github.com/cds-snc/canadalogin-migration-oidc-rp-simulator/compare/v1.4.1...v1.4.2) (2026-10-22)
+
+
+### Bug Fixes
+
+* update proxy-addr to 2.0.8 ([d844828](https://github.com/cds-snc/canadalogin-migration-oidc-rp-simulator/commit/d8448288f71ace41b037cc0ddb1d38b0043de684))
+* update proxy-addr to 2.0.8 ([914cdaa](https://github.com/cds-snc/canadalogin-migration-oidc-rp-simulator/commit/914cdaa04ed106115ba7f1ceb38f70d33f92e13d))
+
+
+### Miscellaneous Chores
+
+* upgrade release pipeline to v2.0.0 ([a6c6169](https://github.com/cds-snc/canadalogin-migration-oidc-rp-simulator/commit/a6c6169797f7e7d9f6737940923ff9459a503b4d))
+* upgrade release pipeline to v2.0.0 ([109d5af](https://github.com/cds-snc/canadalogin-migration-oidc-rp-simulator/commit/109d5af6ae38e10dd3c5e4035765dc0e6fb59e98))
+
 ## [1.4.1](https://github.com/cds-snc/canadalogin-migration-oidc-rp-simulator/compare/v1.4.0...v1.4.1) (2026-10-21)
 
 
