@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM node:20-alpine AS build
+FROM node:24.22.1-alpine AS build
 
 WORKDIR /app
 COPY package*.json ./
@@ -11,7 +11,7 @@ RUN mkdir -p build/src \
   && cp -R src/views build/src/views \
   && cp -R src/public build/src/public
 
-FROM node:20-alpine
+FROM node:24.22.1-alpine
 
 ENV NODE_ENV=production
 WORKDIR /app
