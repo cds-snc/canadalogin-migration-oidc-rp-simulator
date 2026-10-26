@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.4.3](https://github.com/cds-snc/canadalogin-migration-oidc-rp-simulator/compare/v1.4.2...v1.4.3) (2026-10-26)
+
+
+### Bug Fixes
+
+* upgrade Node to 24.22.1 ([d12e601](https://github.com/cds-snc/canadalogin-migration-oidc-rp-simulator/commit/d12e601423573229617cc7aef5a918e48f906188))
+* upgrade Node to 24.22.1 ([131fd77](https://github.com/cds-snc/canadalogin-migration-oidc-rp-simulator/commit/131fd77c23b52f4172ef3f7ecbc2affa8160b8b6))
+
+
+### Miscellaneous Chores
+
+* **deps:** bump the npm_and_yarn group across 1 directory with 2 updates ([dc3e584](https://github.com/cds-snc/canadalogin-migration-oidc-rp-simulator/commit/dc3e584a9dfdd9ea2990b71cef04f2700bf1a819))
+* **deps:** bump the npm_and_yarn group across 1 directory with 2 updates ([b4dc084](https://github.com/cds-snc/canadalogin-migration-oidc-rp-simulator/commit/b4dc0840512b2a8ba31b33a36bee619961868314))
+
 ## [1.4.2](https://github.com/cds-snc/canadalogin-migration-oidc-rp-simulator/compare/v1.4.1...v1.4.2) (2026-10-22)
 
 
