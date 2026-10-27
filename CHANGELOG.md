@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.4.4](https://github.com/cds-snc/canadalogin-migration-oidc-rp-simulator/compare/v1.4.3...v1.4.4) (2026-10-27)
+
+
+### Miscellaneous Chores
+
+* **deps:** lock file maintenance ([966e153](https://github.com/cds-snc/canadalogin-migration-oidc-rp-simulator/commit/966e153b89ca3252aa0c9b857312550895644f21))
+* **deps:** lock file maintenance ([b4467d4](https://github.com/cds-snc/canadalogin-migration-oidc-rp-simulator/commit/b4467d4d5d89b07ecaee8f21ba7b3b0073695ea3))
+* **deps:** update dependency qs to v6.16.1 ([359c324](https://github.com/cds-snc/canadalogin-migration-oidc-rp-simulator/commit/359c324742e2d0c130356940b9a57b5b2720718c))
+* **deps:** update dependency qs to v6.16.1 ([956d41f](https://github.com/cds-snc/canadalogin-migration-oidc-rp-simulator/commit/956d41f668769c8a6f663320ad94f204de7465b4))
+
 ## [1.4.3](https://github.com/cds-snc/canadalogin-migration-oidc-rp-simulator/compare/v1.4.2...v1.4.3) (2026-10-26)
 
 
